@@ -1,4 +1,4 @@
-package com.example.megabatako
+package com.rumapp.megabatako
 
 import io.flutter.embedding.android.FlutterActivity
 
