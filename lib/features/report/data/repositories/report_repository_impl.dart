@@ -57,7 +57,7 @@ class ReportRepositoryImpl implements ReportRepository {
   }
 
   @override
-  Future<Either<Failure, List<ReportByIdEntity>>> getReportById({
+  Future<Either<Failure, List<ReportByIdEntity>>> getReportByIdAndDate({
     required int idEmployee,
     required String date,
   }) async {
@@ -84,4 +84,31 @@ class ReportRepositoryImpl implements ReportRepository {
       return const Left(ConnectionFailure('Tidak ada koneksi internet'));
     }
   }
+
+  @override
+  Future<Either<Failure, List<DateTime>>> getReportDateById({required int idEmployee}) async {
+    bool online = await networkInfo.isConnected();
+
+    if (online) {
+      try {
+        final result = await remoteDataSource.getReportDateById(idEmployee: idEmployee);
+        return Right(result);
+      } on ClientException catch (e) {
+        return Left(ClientFailure(e.message));
+      } on TimeoutException {
+        return const Left(TimeoutFailure('Timeout. No Response'));
+      } on AuthenticationException catch (e) {
+        return Left(AuthenticationFailure(e.message.toString()));
+      } on RequestValidationException catch (e) {
+        return Left(NotFoundFailure(e.message.toString()));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message.toString()));
+      } on BadRequestException catch (e) {
+        return Left(BadRequestFailure(e.message.toString()));
+      }
+    } else {
+      return const Left(ConnectionFailure('Tidak ada koneksi internet'));
+    }
+  }
+
 }

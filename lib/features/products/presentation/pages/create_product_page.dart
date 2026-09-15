@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:megabatako/core/theme/app_colors.dart';
+import 'package:megabatako/core/utils/screen_tap.dart';
 import 'package:megabatako/features/category/presentation/bloc/cubit/get_product_category_cubit.dart';
 import 'package:megabatako/features/image_picker/presentation/bloc/cubit/image_picker_cubit.dart';
 import 'package:megabatako/features/products/domain/entities/store_product_entity.dart';
@@ -109,312 +110,315 @@ class _CreateProductPageState extends State<CreateProductPage> {
           icon: Icon(Icons.arrow_back_ios, color: AppColors.scaffoldBackground),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Foto Produk"),
-                const SizedBox(height: 8),
-                BlocConsumer<ImagePickerCubit, ImagePickerState>(
-                  listener: (context, state) {
-                    if (state is ImagePickerSuccess) {
-                      imageFile = state.image.path;
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is ImagePickerLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is ImagePickerSuccess) {
-                      return InkWell(
-                        onTap: () {
-                          showModalPhoto(context);
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadiusGeometry.circular(8),
-                          child: Image.file(state.image.file),
-                        ),
-                      );
-                    } else {
-                      return InkWell(
-                        onTap: () => showModalPhoto(context),
-                        child: Container(
-                          height: 200,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.border),
-                            color: AppColors.textOnPrimary,
+      body: GestureDetector(
+        onTap: () => screenTap(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Foto Produk"),
+                  const SizedBox(height: 8),
+                  BlocConsumer<ImagePickerCubit, ImagePickerState>(
+                    listener: (context, state) {
+                      if (state is ImagePickerSuccess) {
+                        imageFile = state.image.path;
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is ImagePickerLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is ImagePickerSuccess) {
+                        return InkWell(
+                          onTap: () {
+                            showModalPhoto(context);
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadiusGeometry.circular(8),
+                            child: Image.file(state.image.file),
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.camera_alt_outlined,
-                                color: AppColors.primary,
-                                size: 36,
-                              ),
-                              const SizedBox(height: 8),
-                              Text("Tap untuk upload gambar"),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                Text("Kategori"),
-                const SizedBox(height: 8),
-                BlocBuilder<GetProductCategoryCubit, GetProductCategoryState>(
-                  builder: (context, state) {
-                    if (state is GetProductCategorySuccess) {
-                      List<String> data = state.data
-                          .map((e) => e.name)
-                          .toList();
-                      List<int> dataIds = state.data.map((e) => e.id).toList();
-                      _categoryOptions.clear();
-                      _categoryIds.clear();
-                      _categoryOptions = data;
-                      _categoryIds = dataIds;
-                      return DropdownButtonFormField<String>(
-                        validator: (value) {
-                          if (value == "" || value.toString().isEmpty) {
-                            return "Pilih kategori terlebih dahulu !";
-                          }
-                          return null;
-                        },
-                        initialValue: _selectedCategory,
-                        decoration: InputDecoration(
-                          hintText: 'Pilih Kategori Produk',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: AppColors.textHint,
-                              width: 1.0,
+                        );
+                      } else {
+                        return InkWell(
+                          onTap: () => showModalPhoto(context),
+                          child: Container(
+                            height: 200,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.border),
+                              color: AppColors.textOnPrimary,
                             ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: AppColors.primary,
-                              width: 1.0,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 16,
-                          ),
-                        ),
-                        items: _categoryOptions.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(color: AppColors.textPrimary),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedCategory = newValue;
-                            int index = _categoryOptions.indexWhere(
-                              (element) => element == newValue,
-                            );
-                            _selectedCategoryId = _categoryIds[index];
-                          });
-                          DMethod.log(
-                            "$_selectedCategory | $_selectedCategoryId",
-                          );
-                        },
-                        isExpanded: true,
-                        icon: const Icon(
-                          Icons.keyboard_arrow_down,
-                          color: AppColors.primary,
-                        ),
-                      );
-                    } else if (state is GetProductCategoryLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is GetProductCategoryFailed) {
-                      return Center(child: Text(state.message));
-                    } else {
-                      return const SizedBox();
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                Text("Nama Produk"),
-                const SizedBox(height: 8),
-                TextFormField(
-                  decoration: InputDecoration(hint: Text("Contoh A-1")),
-                  controller: productNameController,
-                  validator: (value) {
-                    if (value == "" || value.toString().isEmpty) {
-                      return "Isi nama produk terlebih dahulu !";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                Text("Harga Jual"),
-                const SizedBox(height: 8),
-                TextFormField(
-                  decoration: InputDecoration(hint: Text("Contoh 20000")),
-                  controller: priceController,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == "" || value.toString().isEmpty) {
-                      return "Isi harga terlebih dahulu !";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                Text("Stok"),
-                const SizedBox(height: 8),
-                TextFormField(
-                  decoration: InputDecoration(hint: Text("Contoh 200")),
-                  controller: stockController,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == "" || value.toString().isEmpty) {
-                      return "Isi stok terlebih dahulu !";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                Text("Deskripsi"),
-                const SizedBox(height: 8),
-                TextFormField(
-                  maxLines: 5,
-                  decoration: InputDecoration(
-                    hint: Text("Masukkan deskripsi produk"),
-                  ),
-                  controller: descriptionController,
-                  validator: (value) {
-                    if (value == "" || value.toString().isEmpty) {
-                      return "Isi deskripsi terlebih dahulu !";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                BlocConsumer<StoreProductCubit, StoreProductState>(
-                  listener: (context, state) {
-                    if (state is StoreProductSuccess) {
-                      showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(12),
-                          ),
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.check_circle_outline_rounded,
-                                    size: 100,
-                                    color: AppColors.success,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    "Berhasil tambah produk",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 24),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      minimumSize: const Size(
-                                        double.infinity,
-                                        52,
-                                      ),
-                                    ),
-                                    child: Text("Kembali"),
-                                  ),
-                                ],
-                              ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.camera_alt_outlined,
+                                  color: AppColors.primary,
+                                  size: 36,
+                                ),
+                                const SizedBox(height: 8),
+                                Text("Tap untuk upload gambar"),
+                              ],
                             ),
                           ),
                         );
-                      },
-                    ).then((value) => Navigator.pop(
-                      context, 
-                      {
-                        'title': 'tambah_produk',
-                        'value': _selectedCategoryId
-                      }));
-                    } else if (state is StoreProductFailed) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.message),
-                          backgroundColor: AppColors.error,
-                        ),
-                      );
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is StoreProductLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    return ElevatedButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          // Jika semua valid, lanjutkan proses
-                          context.read<StoreProductCubit>().storeData(
-                            data: StoreProductEntity(
-                              productCategoryId: _selectedCategoryId!,
-                              name: productNameController.text,
-                              price: priceController.text,
-                              thumbnail: imageFile!,
-                              stock: stockController.text,
-                              desc: descriptionController.text,
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Text("Kategori"),
+                  const SizedBox(height: 8),
+                  BlocBuilder<GetProductCategoryCubit, GetProductCategoryState>(
+                    builder: (context, state) {
+                      if (state is GetProductCategorySuccess) {
+                        List<String> data = state.data
+                            .map((e) => e.name)
+                            .toList();
+                        List<int> dataIds = state.data.map((e) => e.id).toList();
+                        _categoryOptions.clear();
+                        _categoryIds.clear();
+                        _categoryOptions = data;
+                        _categoryIds = dataIds;
+                        return DropdownButtonFormField<String>(
+                          validator: (value) {
+                            if (value == "" || value.toString().isEmpty) {
+                              return "Pilih kategori terlebih dahulu !";
+                            }
+                            return null;
+                          },
+                          initialValue: _selectedCategory,
+                          decoration: InputDecoration(
+                            hintText: 'Pilih Kategori Produk',
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(
+                                color: AppColors.textHint,
+                                width: 1.0,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(
+                                color: AppColors.primary,
+                                width: 1.0,
+                              ),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 16,
+                            ),
+                          ),
+                          items: _categoryOptions.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: TextStyle(color: AppColors.textPrimary),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedCategory = newValue;
+                              int index = _categoryOptions.indexWhere(
+                                (element) => element == newValue,
+                              );
+                              _selectedCategoryId = _categoryIds[index];
+                            });
+                            DMethod.log(
+                              "$_selectedCategory | $_selectedCategoryId",
+                            );
+                          },
+                          isExpanded: true,
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: AppColors.primary,
+                          ),
+                        );
+                      } else if (state is GetProductCategoryLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is GetProductCategoryFailed) {
+                        return Center(child: Text(state.message));
+                      } else {
+                        return const SizedBox();
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Text("Nama Produk"),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    decoration: InputDecoration(hint: Text("Contoh A-1")),
+                    controller: productNameController,
+                    validator: (value) {
+                      if (value == "" || value.toString().isEmpty) {
+                        return "Isi nama produk terlebih dahulu !";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Text("Harga Jual"),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    decoration: InputDecoration(hint: Text("Contoh 20000")),
+                    controller: priceController,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == "" || value.toString().isEmpty) {
+                        return "Isi harga terlebih dahulu !";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Text("Stok"),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    decoration: InputDecoration(hint: Text("Contoh 200")),
+                    controller: stockController,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == "" || value.toString().isEmpty) {
+                        return "Isi stok terlebih dahulu !";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Text("Deskripsi"),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      hint: Text("Masukkan deskripsi produk"),
+                    ),
+                    controller: descriptionController,
+                    validator: (value) {
+                      if (value == "" || value.toString().isEmpty) {
+                        return "Isi deskripsi terlebih dahulu !";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  BlocConsumer<StoreProductCubit, StoreProductState>(
+                    listener: (context, state) {
+                      if (state is StoreProductSuccess) {
+                        showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadiusGeometry.circular(12),
+                            ),
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle_outline_rounded,
+                                      size: 100,
+                                      color: AppColors.success,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      "Berhasil tambah produk",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        minimumSize: const Size(
+                                          double.infinity,
+                                          52,
+                                        ),
+                                      ),
+                                      child: Text("Kembali"),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           );
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.save),
-                          const SizedBox(width: 8),
-                          Text("Simpan"),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 8),
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
+                        },
+                      ).then((value) => Navigator.pop(
+                        context, 
+                        {
+                          'title': 'tambah_produk',
+                          'value': _selectedCategoryId
+                        }));
+                      } else if (state is StoreProductFailed) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.message),
+                            backgroundColor: AppColors.error,
+                          ),
+                        );
+                      }
                     },
-                    child: Text(
-                      "Batal",
-                      style: TextStyle(color: AppColors.error),
+                    builder: (context, state) {
+                      if (state is StoreProductLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      return ElevatedButton(
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            // Jika semua valid, lanjutkan proses
+                            context.read<StoreProductCubit>().storeData(
+                              data: StoreProductEntity(
+                                productCategoryId: _selectedCategoryId!,
+                                name: productNameController.text,
+                                price: priceController.text,
+                                thumbnail: imageFile!,
+                                stock: stockController.text,
+                                desc: descriptionController.text,
+                              ),
+                            );
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.save),
+                            const SizedBox(width: 8),
+                            Text("Simpan"),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Batal",
+                        style: TextStyle(color: AppColors.error),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-              ],
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
           ),
         ),

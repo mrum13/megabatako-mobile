@@ -57,9 +57,11 @@ import 'package:megabatako/features/products/presentation/blocs/cubit/update_pro
 import 'package:megabatako/features/report/data/datasources/report_remote_data_source.dart';
 import 'package:megabatako/features/report/data/repositories/report_repository_impl.dart';
 import 'package:megabatako/features/report/domain/repositories/report_repository.dart';
+import 'package:megabatako/features/report/domain/usecases/get_report_date_use_case.dart';
 import 'package:megabatako/features/report/domain/usecases/get_report_use_case.dart';
 import 'package:megabatako/features/report/domain/usecases/store_report_use_case.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_by_id_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_date_by_id_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/store_report_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -85,6 +87,7 @@ Future<void> initLocator() async {
   locator.registerFactory(() => StoreReportCubit(locator()));
   locator.registerFactory(() => GetReportByIdCubit(locator()));
   locator.registerFactory(() => GetStockSummaryCubit(locator()));
+  locator.registerFactory(() => GetReportDateByIdCubit(locator()));
 
   ///business logic state
 
@@ -106,6 +109,7 @@ Future<void> initLocator() async {
   locator.registerLazySingleton(() => StoreEmployeeUseCase(locator()));
   locator.registerLazySingleton(() => StoreReportUseCase(locator()));
   locator.registerLazySingleton(() => GetReportUseCase(locator()));
+  locator.registerLazySingleton(() => GetReportDateUseCase(locator()));
   locator.registerLazySingleton(() => GetStockSummaryUseCase(locator()));
 
   /// repository

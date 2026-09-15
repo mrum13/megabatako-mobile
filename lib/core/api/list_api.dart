@@ -25,7 +25,8 @@ class ListAPI {
   static String deleteProduct(int id) => "/api/product/destroy/$id";
 
   ///report
-  static String getReportById(int idEmployee, String date) => "/api/report/$idEmployee/$date";
+  static String getReportByIdAndDate(int idEmployee, String date) => "/api/report/$idEmployee/$date";
+  static String getReportDateById(int idEmployee) => "/api/report/$idEmployee";
   static const String storeReport = "/api/report/store";
   static String updateReport(int id) => "/api/report/update/$id";
   static String deleteReport(int id) => "/api/report/destroy/$id";

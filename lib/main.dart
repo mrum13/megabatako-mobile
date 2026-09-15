@@ -20,6 +20,7 @@ import 'package:megabatako/features/products/presentation/blocs/cubit/get_produc
 import 'package:megabatako/features/products/presentation/blocs/cubit/store_product_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/update_product_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_by_id_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_date_by_id_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/store_report_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => locator<StoreReportCubit>()),
         BlocProvider(create: (context) => locator<GetReportByIdCubit>()),
         BlocProvider(create: (context) => locator<GetStockSummaryCubit>()),
+        BlocProvider(create: (context) => locator<GetReportDateByIdCubit>()),
       ],
       child: MaterialApp(
         theme: AppTheme.lightTheme,

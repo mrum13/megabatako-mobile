@@ -5,5 +5,6 @@ import 'package:megabatako/features/report/domain/entities/store_report_entity.d
 
 abstract class ReportRepository {
   Future<Either<Failure, bool>> storeReport({required StoreReportEntity data});
-  Future<Either<Failure, List<ReportByIdEntity>>> getReportById({required int idEmployee, required String date});
+  Future<Either<Failure, List<ReportByIdEntity>>> getReportByIdAndDate({required int idEmployee, required String date});
+  Future<Either<Failure, List<DateTime>>> getReportDateById({required int idEmployee});
 }

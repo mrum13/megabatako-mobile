@@ -132,9 +132,7 @@ class _ChooseProductOrderPageState extends State<ChooseProductOrderPage> {
                     }
                     return GridView.count(
                       crossAxisCount: 2, // 2 kolom
-                      shrinkWrap: true, // supaya ikut tinggi konten
-                      physics:
-                          const NeverScrollableScrollPhysics(), // biar nggak scroll sendiri
+                      shrinkWrap: true, // supaya ikut tinggi konten// biar nggak scroll sendiri
                       mainAxisSpacing: 12,
                       crossAxisSpacing: 12,
                       childAspectRatio: 0.75, // atur proporsi card

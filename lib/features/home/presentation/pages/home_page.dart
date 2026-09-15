@@ -8,6 +8,7 @@ import 'package:megabatako/core/theme/app_colors.dart';
 import 'package:megabatako/features/account/presentation/blocs/cubit/get_current_user_cubit.dart';
 import 'package:megabatako/features/home/presentation/blocs/cubit/get_stock_summary_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/blocs/cubit/navbar_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_date_by_id_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
 class HomePage extends StatefulWidget {
@@ -137,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                     child: InkWell(
                       onTap: () {
                         if (isEmployee && currentUserId!=0) {
-                          
+                          context.read<GetReportDateByIdCubit>().getData(idEmployee: currentUserId);
                           Navigator.pushNamed(
                               context,
                               AppRoutes.detailReportPage,
