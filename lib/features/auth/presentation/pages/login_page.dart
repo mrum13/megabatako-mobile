@@ -5,6 +5,8 @@ import 'package:megabatako/features/account/presentation/blocs/cubit/get_current
 import 'package:megabatako/features/auth/presentation/blocs/cubit/sign_in_cubit.dart';
 import 'package:megabatako/features/auth/presentation/widgets/text_form_field_bordered.dart';
 import 'package:megabatako/features/category/presentation/bloc/cubit/get_product_category_cubit.dart';
+import 'package:megabatako/features/employee/presentation/bloc/cubit/get_list_employee_cubit.dart';
+import 'package:megabatako/features/home/presentation/blocs/cubit/get_stock_summary_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
 class LoginPage extends StatelessWidget {
@@ -13,12 +15,18 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-    TextEditingController usernameController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
+    TextEditingController usernameController = TextEditingController(
+      text: "",
+    );
+    TextEditingController passwordController = TextEditingController(
+      text: "",
+    );
 
     void afterSignIn(BuildContext context) {
       context.read<GetCurrentUserCubit>().getCurrentUser();
       context.read<GetProductCategoryCubit>().getData();
+      context.read<GetListEmployeeCubit>().getData();
+      context.read<GetStockSummaryCubit>().getData();
     }
 
     return Scaffold(
@@ -27,23 +35,29 @@ class LoginPage extends StatelessWidget {
         builder: (context, constraints) {
           return SingleChildScrollView(
             child: ConstrainedBox(
-              constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset("assets/logo.png", height: 94, width: 94,),
+                  Image.asset("assets/logo.png", height: 94, width: 94),
                   const SizedBox(height: 24),
                   Text(
                     "Mega Batako",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textOnPrimary),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textOnPrimary,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     "Sign in to manage your operations",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textOnPrimary),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textOnPrimary,
+                    ),
                   ),
                   const SizedBox(height: 32),
                   Container(
@@ -60,7 +74,13 @@ class LoginPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Username", style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),),
+                          Text(
+                            "Username",
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(height: 6),
                           TextFormFieldBordered(
                             obscureText: false,
@@ -74,7 +94,13 @@ class LoginPage extends StatelessWidget {
                             },
                           ),
                           const SizedBox(height: 20),
-                          Text("Password", style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                          Text(
+                            "Password",
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(height: 6),
                           TextFormFieldBordered(
                             obscureText: true,
@@ -88,45 +114,81 @@ class LoginPage extends StatelessWidget {
                             },
                           ),
                           const SizedBox(height: 20),
-                          BlocConsumer<SignInCubit, SignInState>(
-                            listener: (context, state) {
-                              if (state is SignInSuccess) {
-                                afterSignIn(context);
-                                Navigator.of(context).pushNamedAndRemoveUntil(
+                          MultiBlocListener(
+                            listeners: [
+                              BlocListener<
+                                GetCurrentUserCubit,
+                                GetCurrentUserState
+                              >(
+                                listener: (context, state) {
+                                  if (state is GetCurrentUserSuccess) {
+                                    context.read<SignInCubit>().setInit();
+                                    Navigator.of(
+                                      context,
+                                    ).pushNamedAndRemoveUntil(
                                       AppRoutes.mainPage,
                                       (Route<dynamic> route) => false,
                                     );
-                              } else if (state is SignInFailed) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message), backgroundColor: AppColors.error,));
-                              }
-                            },
-                            builder: (context, state) {
-                              if (state is SignInLoading) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                              return ElevatedButton(
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    // Jika semua valid, lanjutkan proses
-                                    context.read<SignInCubit>().signin(email: usernameController.text, password: passwordController.text);
+                                  } else if (state is GetCurrentUserFailed) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(state.message),
+                                        backgroundColor: AppColors.error,
+                                      ),
+                                    );
                                   }
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(double.infinity, 54),
-                                  backgroundColor: AppColors.primary,
-                                ),
-                                child: Text(
-                                  "Login",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: AppColors.scaffoldBackground,
-                                    fontWeight: FontWeight.w700,
+                              ),
+                              BlocListener<SignInCubit, SignInState>(
+                                listener: (context, state) {
+                                  if (state is SignInSuccess) {
+                                    afterSignIn(context);
+                                  } else if (state is SignInFailed) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(state.message),
+                                        backgroundColor: AppColors.error,
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                            child: BlocBuilder<SignInCubit, SignInState>(
+                              builder: (context, state) {
+                                if (state is SignInLoading || state is SignInSuccess) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    if (formKey.currentState!.validate()) {
+                                      // Jika semua valid, lanjutkan proses
+                                      context.read<SignInCubit>().signin(
+                                        email: usernameController.text,
+                                        password: passwordController.text,
+                                      );
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size(
+                                      double.infinity,
+                                      54,
+                                    ),
+                                    backgroundColor: AppColors.primary,
                                   ),
-                                ),
-                              );
-                            },
+                                  child: Text(
+                                    "Login",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: AppColors.scaffoldBackground,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -136,7 +198,7 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           );
-        }
+        },
       ),
     );
   }

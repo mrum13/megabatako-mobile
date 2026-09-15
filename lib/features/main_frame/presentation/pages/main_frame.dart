@@ -1,8 +1,8 @@
-import 'package:d_method/d_method.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:megabatako/core/theme/app_colors.dart';
+import 'package:megabatako/features/account/presentation/blocs/cubit/get_current_user_cubit.dart';
 import 'package:megabatako/features/account/presentation/pages/account_page.dart';
 import 'package:megabatako/features/home/presentation/pages/home_page.dart';
 import 'package:megabatako/features/image_picker/presentation/bloc/cubit/image_picker_cubit.dart';
@@ -46,7 +46,9 @@ class MainFrame extends StatelessWidget {
                   switch (title) {
                     case 'tambah_produk':
                       {
-                        context.read<GetProductByCategoryCubit>().getData(productCategoryId: value);
+                        context.read<GetProductByCategoryCubit>().getData(
+                          productCategoryId: value,
+                        );
                       }
                       break;
                     default:
@@ -55,13 +57,11 @@ class MainFrame extends StatelessWidget {
               }
               break;
             case 'option2':
+              Navigator.pushNamed(context, AppRoutes.createOrderPage);
               break;
             case 'option3':
               {
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.createReportPage,
-                );
+                Navigator.pushNamed(context, AppRoutes.createReportPage);
               }
               break;
             default:
@@ -84,29 +84,36 @@ class MainFrame extends StatelessWidget {
           ),
           child: const Icon(Icons.add, size: 28, color: AppColors.surface),
         ),
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          const PopupMenuItem<String>(
-            value: 'option1',
-            child: ListTile(
-              leading: Icon(Icons.add_circle_outline),
-              title: Text('Tambah Produk'),
+        itemBuilder: (BuildContext context) {
+          final accountState = context.read<GetCurrentUserCubit>().state;
+          final bool isSuperAdmin =
+              accountState is GetCurrentUserSuccess &&
+              accountState.data.role == 'superadmin';
+          return <PopupMenuEntry<String>>[
+            if (isSuperAdmin) 
+              const PopupMenuItem<String>(
+                value: 'option1',
+                child: ListTile(
+                  leading: Icon(Icons.add_circle_outline),
+                  title: Text('Tambah Produk'),
+                ),
+              ),
+            const PopupMenuItem<String>(
+              value: 'option2',
+              child: ListTile(
+                leading: Icon(Icons.add_shopping_cart_sharp),
+                title: Text('Buat Pesanan'),
+              ),
             ),
-          ),
-          const PopupMenuItem<String>(
-            value: 'option2',
-            child: ListTile(
-              leading: Icon(Icons.add_shopping_cart_sharp),
-              title: Text('Buat Pesanan'),
+            const PopupMenuItem<String>(
+              value: 'option3',
+              child: ListTile(
+                leading: Icon(Icons.add_chart_rounded),
+                title: Text('Buat Laporan'),
+              ),
             ),
-          ),
-          const PopupMenuItem<String>(
-            value: 'option3',
-            child: ListTile(
-              leading: Icon(Icons.add_chart_rounded),
-              title: Text('Buat Laporan'),
-            ),
-          ),
-        ],
+          ];
+        },
       ),
       bottomNavigationBar: MainBottomBar(),
     );

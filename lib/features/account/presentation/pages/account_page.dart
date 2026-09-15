@@ -10,6 +10,10 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accountState = context.read<GetCurrentUserCubit>().state;
+    final bool isSuperAdmin =
+        accountState is GetCurrentUserSuccess &&
+        accountState.data.role == 'superadmin';
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -82,37 +86,50 @@ class AccountPage extends StatelessWidget {
                 }
               },
             ),
+            Visibility(
+              visible: isSuperAdmin,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.categoryPage);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.file_copy),
+                        const SizedBox(width: 16),
+                        Text("Manajemen Kategori Produk"),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.manageEmployeePage,
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.person),
+                        const SizedBox(width: 16),
+                        Text("Manajemen Pegawai"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 24),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.categoryPage);
-              },
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 48),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.file_copy),
-                  const SizedBox(width: 16),
-                  Text("Manajemen Kategori Produk"),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            OutlinedButton(
-              onPressed: () {},
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 48),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.person),
-                  const SizedBox(width: 16),
-                  Text("Manajemen User"),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pushNamedAndRemoveUntil(

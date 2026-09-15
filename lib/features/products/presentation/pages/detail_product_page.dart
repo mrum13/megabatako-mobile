@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:megabatako/core/api/urls.dart';
 import 'package:megabatako/core/theme/app_colors.dart';
 import 'package:megabatako/core/utils/formatter.dart';
+import 'package:megabatako/features/account/presentation/blocs/cubit/get_current_user_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/delete_product_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/get_product_by_category_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
@@ -14,9 +15,11 @@ class DetailProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accountState = context.read<GetCurrentUserCubit>().state;
+    final bool isSuperAdmin =
+        accountState is GetCurrentUserSuccess &&
+        accountState.data.role == 'superadmin';
     var id = ModalRoute.of(context)!.settings.arguments as int;
-
-    DMethod.log("ID BUILD DETAIL PRODUCT = $id");
 
     Color stockColor({required int stock}) {
       if (stock >= 100) {
@@ -47,7 +50,8 @@ class DetailProductPage extends StatelessWidget {
         color: AppColors.background,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
+          child: isSuperAdmin 
+          ? Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               OutlinedButton(
@@ -184,7 +188,16 @@ class DetailProductPage extends StatelessWidget {
                 },
               ),
             ],
-          ),
+          )
+          : ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 52),
+                ),
+                child: Text("Kembali"),
+              ),
         ),
       ),
       body: Padding(

@@ -126,13 +126,11 @@ class _ProductsPageState extends State<ProductsPage> {
                       );
                     }
                     return GridView.count(
-                      crossAxisCount: 2, // 2 kolom
-                      shrinkWrap: true, // supaya ikut tinggi konten
-                      physics:
-                          const NeverScrollableScrollPhysics(), // biar nggak scroll sendiri
+                      crossAxisCount: 2, 
+                      shrinkWrap: true, 
                       mainAxisSpacing: 12,
                       crossAxisSpacing: 12,
-                      childAspectRatio: 0.75, // atur proporsi card
+                      childAspectRatio: 0.75, 
                       children: List.generate(state.data.length, (index) {
                         Color stockColor({required int stock}) {
                           if (stock >= 100) {

@@ -8,6 +8,10 @@ import 'package:megabatako/features/auth/presentation/blocs/cubit/sign_in_cubit.
 import 'package:megabatako/features/category/presentation/bloc/cubit/delete_product_category_cubit.dart';
 import 'package:megabatako/features/category/presentation/bloc/cubit/get_product_category_cubit.dart';
 import 'package:megabatako/features/category/presentation/bloc/cubit/store_product_category_cubit.dart';
+import 'package:megabatako/features/employee/presentation/bloc/cubit/delete_employee_cubit.dart';
+import 'package:megabatako/features/employee/presentation/bloc/cubit/get_list_employee_cubit.dart';
+import 'package:megabatako/features/employee/presentation/bloc/cubit/store_employee_cubit.dart';
+import 'package:megabatako/features/home/presentation/blocs/cubit/get_stock_summary_cubit.dart';
 import 'package:megabatako/features/image_picker/presentation/bloc/cubit/image_picker_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/blocs/cubit/navbar_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/pages/main_frame.dart';
@@ -15,6 +19,8 @@ import 'package:megabatako/features/products/presentation/blocs/cubit/delete_pro
 import 'package:megabatako/features/products/presentation/blocs/cubit/get_product_by_category_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/store_product_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/update_product_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_by_id_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/store_report_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
 void main() async {
@@ -42,6 +48,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => locator<GetProductByCategoryCubit>()),
         BlocProvider(create: (context) => locator<DeleteProductCubit>()),
         BlocProvider(create: (context) => locator<UpdateProductCubit>()),
+        BlocProvider(create: (context) => locator<GetListEmployeeCubit>()),
+        BlocProvider(create: (context) => locator<DeleteEmployeeCubit>()),
+        BlocProvider(create: (context) => locator<StoreEmployeeCubit>()),
+        BlocProvider(create: (context) => locator<StoreReportCubit>()),
+        BlocProvider(create: (context) => locator<GetReportByIdCubit>()),
+        BlocProvider(create: (context) => locator<GetStockSummaryCubit>()),
       ],
       child: MaterialApp(
         theme: AppTheme.lightTheme,
