@@ -7,6 +7,7 @@ import 'package:megabatako/features/account/presentation/blocs/cubit/get_current
 import 'package:megabatako/features/employee/domain/entities/employee_entity.dart';
 import 'package:megabatako/features/employee/presentation/bloc/cubit/get_list_employee_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_by_id_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_date_by_id_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
 class ReportPage extends StatelessWidget {
@@ -64,6 +65,7 @@ class ReportPage extends StatelessWidget {
                                 'yyyy-MM-dd',
                               ).format(DateTime.now()),
                             );
+                            context.read<GetReportDateByIdCubit>().getData(idEmployee: filteredData[index].id);
                             Navigator.pushNamed(
                               context,
                               AppRoutes.detailReportPage,

@@ -20,6 +20,18 @@ class InformationPage extends StatelessWidget {
         'content':
             "Batas lokasi pengantaran bagian selatan adalah tojabi, ke arah utara adalah tobaku",
       },
+            {
+        'image': "assets/bri.png",
+        'title': "Rekening BRI",
+        'content':
+            "2143-0100-0347-569",
+      },
+      {
+        'image': "assets/whatsapp.png",
+        'title': "Whatsapp",
+        'content':
+            "085341004374",
+      },
     ];
     return Scaffold(
       appBar: AppBar(
@@ -37,32 +49,186 @@ class InformationPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsetsGeometry.all(16),
-        child: ListView.separated(
-          itemBuilder: (context, index) {
-            return Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Pengantaran",
+              style: TextStyle(
+                fontSize: 18,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Image.asset(informationData[index]['image'], height: 56, width: 56,),
-                    const SizedBox(width: 16,),
+                    Image.asset(
+                      informationData[0]['image'],
+                      height: 56,
+                      width: 56,
+                    ),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(informationData[index]['title'], style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: AppColors.textPrimary),),
-                          const SizedBox(height: 4,),
-                          Text(informationData[index]['content'], style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14,),),
+                          Text(
+                            informationData[0]['title'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            informationData[0]['content'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-            );
-          },
-          separatorBuilder: (context, index) => const SizedBox(height: 16),
-          itemCount: informationData.length,
+            ),
+            const SizedBox(height: 8),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      informationData[1]['image'],
+                      height: 56,
+                      width: 56,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            informationData[1]['title'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            informationData[1]['content'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Divider(),
+            const SizedBox(height: 16),
+            Text(
+              "Rekening & Whatsapp",
+              style: TextStyle(
+                fontSize: 18,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      informationData[2]['image'],
+                      height: 56,
+                      width: 56,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            informationData[2]['title'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            informationData[2]['content'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      informationData[3]['image'],
+                      height: 56,
+                      width: 56,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            informationData[3]['title'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            informationData[3]['content'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

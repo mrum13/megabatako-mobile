@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:d_method/d_method.dart';
 import 'package:http/http.dart' as http;
 import 'package:megabatako/core/api/api_helper.dart';
 import 'package:megabatako/core/api/list_api.dart';
@@ -16,6 +15,7 @@ abstract class ReportRemoteDataSource {
     required int idEmployee,
     required String date,
   });
+  Future<List<DateTime>> getReportDateById({required int idEmployee});
 }
 
 class ReportRemoteDataSourceImpl implements ReportRemoteDataSource {
@@ -75,7 +75,7 @@ class ReportRemoteDataSourceImpl implements ReportRemoteDataSource {
     required String date,
   }) async {
     Uri url = Uri.parse(
-      '${URLs.url}${ListAPI.getReportById(idEmployee, date)}',
+      '${URLs.url}${ListAPI.getReportByIdAndDate(idEmployee, date)}',
     );
     late final http.Response response;
 
@@ -96,6 +96,41 @@ class ReportRemoteDataSourceImpl implements ReportRemoteDataSource {
     if (response.statusCode == 200) {
       List rawData = jsonDecode(response.body)['data'];
       return rawData.map((e) => ReportByIdModel.fromJson(e)).toList();
+    } else {
+      final body = decodeResponseBody(response);
+      switch (response.statusCode) {
+        case 401:
+          throw AuthenticationException(body['message']);
+        case 404:
+          throw NotFoundException(body['message']);
+        default:
+          throw ServerException();
+      }
+    }
+  }
+
+  @override
+  Future<List<DateTime>> getReportDateById({required int idEmployee}) async {
+    Uri url = Uri.parse('${URLs.url}${ListAPI.getReportDateById(idEmployee)}');
+    late final http.Response response;
+
+    try {
+      response = await client
+          .get(
+            url,
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ${pref.getString('token')}',
+            },
+          )
+          .timeout(const Duration(seconds: 10));
+    } catch (e) {
+      throw http.ClientException(e.toString());
+    }
+
+    if (response.statusCode == 200) {
+      List rawData = jsonDecode(response.body)['data'];
+      return rawData.map((e) => DateTime.parse(e)).toList();
     } else {
       final body = decodeResponseBody(response);
       switch (response.statusCode) {

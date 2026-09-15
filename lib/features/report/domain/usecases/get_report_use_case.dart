@@ -9,6 +9,6 @@ class GetReportUseCase {
   GetReportUseCase(this.repository);
 
   Future<Either<Failure, List<ReportByIdEntity>>> call({required int idEmployee, required String date}) {
-    return repository.getReportById(idEmployee: idEmployee, date: date);
+    return repository.getReportByIdAndDate(idEmployee: idEmployee, date: date);
   }
 }
