@@ -21,6 +21,20 @@ import 'package:megabatako/features/category/domain/usecases/store_category_use_
 import 'package:megabatako/features/category/presentation/bloc/cubit/delete_product_category_cubit.dart';
 import 'package:megabatako/features/category/presentation/bloc/cubit/get_product_category_cubit.dart';
 import 'package:megabatako/features/category/presentation/bloc/cubit/store_product_category_cubit.dart';
+import 'package:megabatako/features/employee/data/datasources/employee_remote_data_source.dart';
+import 'package:megabatako/features/employee/data/repositories/employee_repository_impl.dart';
+import 'package:megabatako/features/employee/domain/repositories/employee_repository.dart';
+import 'package:megabatako/features/employee/domain/usecases/delete_employee_use_case.dart';
+import 'package:megabatako/features/employee/domain/usecases/get_employee_use_case.dart';
+import 'package:megabatako/features/employee/domain/usecases/store_employee_use_case.dart';
+import 'package:megabatako/features/employee/presentation/bloc/cubit/delete_employee_cubit.dart';
+import 'package:megabatako/features/employee/presentation/bloc/cubit/get_list_employee_cubit.dart';
+import 'package:megabatako/features/employee/presentation/bloc/cubit/store_employee_cubit.dart';
+import 'package:megabatako/features/home/data/data_sources/home_remote_data_source.dart';
+import 'package:megabatako/features/home/data/repositories/home_repository_impl.dart';
+import 'package:megabatako/features/home/domain/repositories/home_repository.dart';
+import 'package:megabatako/features/home/domain/use_cases/get_stock_summary_use_case.dart';
+import 'package:megabatako/features/home/presentation/blocs/cubit/get_stock_summary_cubit.dart';
 import 'package:megabatako/features/image_picker/data/datasources/image_picker_data_source.dart';
 import 'package:megabatako/features/image_picker/data/repositories/image_picker_repository_impl.dart';
 import 'package:megabatako/features/image_picker/domain/repositories/image_picker_repository.dart';
@@ -40,6 +54,13 @@ import 'package:megabatako/features/products/presentation/blocs/cubit/delete_pro
 import 'package:megabatako/features/products/presentation/blocs/cubit/get_product_by_category_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/store_product_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/update_product_cubit.dart';
+import 'package:megabatako/features/report/data/datasources/report_remote_data_source.dart';
+import 'package:megabatako/features/report/data/repositories/report_repository_impl.dart';
+import 'package:megabatako/features/report/domain/repositories/report_repository.dart';
+import 'package:megabatako/features/report/domain/usecases/get_report_use_case.dart';
+import 'package:megabatako/features/report/domain/usecases/store_report_use_case.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_by_id_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/store_report_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final locator = GetIt.instance;
@@ -58,6 +79,12 @@ Future<void> initLocator() async {
   locator.registerFactory(() => StoreProductCategoryCubit(locator()));
   locator.registerFactory(() => GetProductByCategoryCubit(locator()));
   locator.registerFactory(() => DeleteProductCategoryCubit(locator()));
+  locator.registerFactory(() => GetListEmployeeCubit(locator()));
+  locator.registerFactory(() => DeleteEmployeeCubit(locator()));
+  locator.registerFactory(() => StoreEmployeeCubit(locator()));
+  locator.registerFactory(() => StoreReportCubit(locator()));
+  locator.registerFactory(() => GetReportByIdCubit(locator()));
+  locator.registerFactory(() => GetStockSummaryCubit(locator()));
 
   ///business logic state
 
@@ -74,6 +101,12 @@ Future<void> initLocator() async {
   locator.registerLazySingleton(() => GetProductByCategoryUseCase(locator()));
   locator.registerLazySingleton(() => DeleteProductUseCase(locator()));
   locator.registerLazySingleton(() => UpdateProductUseCase(locator()));
+  locator.registerLazySingleton(() => GetEmployeeUseCase(locator()));
+  locator.registerLazySingleton(() => DeleteEmployeeUseCase(locator()));
+  locator.registerLazySingleton(() => StoreEmployeeUseCase(locator()));
+  locator.registerLazySingleton(() => StoreReportUseCase(locator()));
+  locator.registerLazySingleton(() => GetReportUseCase(locator()));
+  locator.registerLazySingleton(() => GetStockSummaryUseCase(locator()));
 
   /// repository
   /// untuk registrasi repository, gunakan registerLazySingleton
@@ -100,7 +133,21 @@ Future<void> initLocator() async {
       networkInfo: locator(), 
       remoteDataSource: locator()),
   );
-  
+  locator.registerLazySingleton<EmployeeRepository>(
+    () => EmployeeRepositoryImpl(
+      networkInfo: locator(), 
+      remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<ReportRepository>(
+    () => ReportRepositoryImpl(
+      networkInfo: locator(), 
+      remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<HomeRepository>(
+    () => HomeRepositoryImpl(
+      networkInfo: locator(), 
+      remoteDataSource: locator()),
+  );
 
   /// datasource
   /// untuk registrasi data source, gunakan registerLazySingleton
@@ -125,6 +172,15 @@ Future<void> initLocator() async {
   );
   locator.registerLazySingleton<CategoryRemoteDataSource>(
     () => CategoryRemoteDataSourceImpl(client: locator(), pref: locator()),
+  );
+  locator.registerLazySingleton<EmployeeRemoteDataSource>(
+    () => EmployeeRemoteDataSourceImpl(client: locator(), pref: locator()),
+  );
+  locator.registerLazySingleton<ReportRemoteDataSource>(
+    () => ReportRemoteDataSourceImpl(client: locator(), pref: locator()),
+  );
+  locator.registerLazySingleton<HomeRemoteDataSource>(
+    () => HomeRemoteDataSourceImpl(client: locator(), pref: locator()),
   );
 
   ///device data source

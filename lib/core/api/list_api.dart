@@ -4,7 +4,13 @@ class ListAPI {
   static const String signOut = "/api/logout";
 
   ///current user
-  static const String currentUser = "/api/user";
+  static const String currentUser = "/api/user/current-user";
+
+  ///employee
+  static const String employee = "/api/user/list-user";
+  static const String storeEmployee = "/api/user/store";
+  static String updateEmployee (int id) => "/api/user/update/$id";
+  static String deleteEmployee (int id) => "/api/user/destroy/$id";
 
   ///product category
   static const String getProductCategory = "/api/product-category";
@@ -19,8 +25,11 @@ class ListAPI {
   static String deleteProduct(int id) => "/api/product/destroy/$id";
 
   ///report
-  static const String getReport = "/api/report";
+  static String getReportById(int idEmployee, String date) => "/api/report/$idEmployee/$date";
   static const String storeReport = "/api/report/store";
   static String updateReport(int id) => "/api/report/update/$id";
   static String deleteReport(int id) => "/api/report/destroy/$id";
+
+  ///home
+  static const String stockSummary = "/api/home/stock-summary";
 }

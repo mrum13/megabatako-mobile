@@ -6,6 +6,7 @@ import 'package:megabatako/features/auth/presentation/widgets/text_form_field_bo
 import 'package:megabatako/features/category/presentation/bloc/cubit/delete_product_category_cubit.dart';
 import 'package:megabatako/features/category/presentation/bloc/cubit/get_product_category_cubit.dart';
 import 'package:megabatako/features/category/presentation/bloc/cubit/store_product_category_cubit.dart';
+import 'package:megabatako/widgets/dialog_success.dart';
 
 class CategoryPage extends StatelessWidget {
   const CategoryPage({super.key});
@@ -246,46 +247,7 @@ class CategoryPage extends StatelessWidget {
       barrierDismissible: false,
       context: context,
       builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(12),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.check_circle_outline_rounded,
-                  size: 100,
-                  color: AppColors.success,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(
-                      double.infinity,
-                      52,
-                    ),
-                  ),
-                  child: Text("Kembali"),
-                ),
-              ],
-            ),
-          ),
-        );
+        return DialogSuccess(value: value);
       },
     ).then((value) {
       context.read<GetProductCategoryCubit>().getData();

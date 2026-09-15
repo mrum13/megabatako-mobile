@@ -28,20 +28,20 @@ Future<bool> isPhysicalDevice() async {
 }
 
 Future<String> getBaseUrl() async {
-  final isReal = await isPhysicalDevice();
+  // final isReal = await isPhysicalDevice();
 
-  String wifiConnection = "http://192.168.100.91:8000";
-  String mobileHotspot = "http://192.168.52.220:8000";
-  String emulatorConnection = "http://10.0.2.2:8000";
-  String simulatorConnection = "http://127.0.0.1:8000";
+  // String wifiConnection = "http://192.168.100.91:8000";
+  // String mobileHotspot = "http://192.168.219.220:8000";
+  // String emulatorConnection = "http://10.0.2.2:8000";
+  // String simulatorConnection = "http://127.0.0.1:8000";
 
-  if (Platform.isAndroid) {
-    return isReal ? mobileHotspot  : emulatorConnection;
-  } else if (Platform.isIOS) {
-    return isReal ? wifiConnection : simulatorConnection;
-  }
+  // if (Platform.isAndroid) {
+  //   return isReal ? mobileHotspot  : emulatorConnection;
+  // } else if (Platform.isIOS) {
+  //   return isReal ? mobileHotspot : simulatorConnection;
+  // }
 
-  return "http://127.0.0.1:8000";
+  return "https://megabatako.online";
 }
 
 
