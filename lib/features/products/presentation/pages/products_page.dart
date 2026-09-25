@@ -117,151 +117,177 @@ class _ProductsPageState extends State<ProductsPage> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: BlocBuilder<GetProductByCategoryCubit, GetProductByCategoryState>(
-                builder: (context, state) {
-                  if (state is GetProductByCategorySuccess) {
-                    if (state.data.isEmpty) {
-                      return const Center(
-                        child: Text("Data Kosong"),
-                      );
-                    }
-                    return GridView.count(
-                      crossAxisCount: 2, 
-                      shrinkWrap: true, 
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      childAspectRatio: 0.75, 
-                      children: List.generate(state.data.length, (index) {
-                        Color stockColor({required int stock}) {
-                          if (stock >= 100) {
-                            return AppColors.success;
-                          } else if (stock >= 50 && stock < 100) {
-                            return AppColors.warning;
-                          } else {
-                            return AppColors.error;
-                          }
-                        }
-
-                        return InkWell(
-                          onTap: () async {
-                            idSelected = state.data[index].id;
-                            final result = await Navigator.pushNamed(
-                              context,
-                              AppRoutes.detailProductPage,
-                              arguments: idSelected,
-                            );
-
-                            if (result == true) {
-                              context.read<GetProductByCategoryCubit>().getData(
-                                productCategoryId: idSelected,
-                              );
-                            }
-
-                            
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.surface,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.textHint),
-                            ),
+              child:
+                  BlocBuilder<
+                    GetProductByCategoryCubit,
+                    GetProductByCategoryState
+                  >(
+                    builder: (context, state) {
+                      if (state is GetProductByCategorySuccess) {
+                        if (state.data.isEmpty) {
+                          return Center(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(12),
-                                    topRight: Radius.circular(12),
-                                  ),
-                                  child: AspectRatio(
-                                    aspectRatio: 1.09,
-                                    child: Image.network(
-                                      "${URLs.storageUrl}${state.data[index].thumbnail}",
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    ),
+                                Image.asset(
+                                  "assets/no_data.png",
+                                  fit: BoxFit.contain,
+                                  height: 150,
+                                  width: 150,
+                                ),
+                                Text(
+                                  "Data kosong",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textSecondary,
                                   ),
                                 ),
+                              ],
+                            ),
+                          );
+                        }
+                        return GridView.count(
+                          crossAxisCount: 2,
+                          shrinkWrap: true,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: 0.75,
+                          children: List.generate(state.data.length, (index) {
+                            Color stockColor({required int stock}) {
+                              if (stock >= 100) {
+                                return AppColors.success;
+                              } else if (stock >= 50 && stock < 100) {
+                                return AppColors.warning;
+                              } else {
+                                return AppColors.error;
+                              }
+                            }
 
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          state.data[index].name,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.inter(
-                                            color: AppColors.textPrimary,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                            return InkWell(
+                              onTap: () async {
+                                idSelected = state.data[index].id;
+                                final result = await Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.detailProductPage,
+                                  arguments: idSelected,
+                                );
+
+                                if (result == true) {
+                                  context
+                                      .read<GetProductByCategoryCubit>()
+                                      .getData(productCategoryId: idSelected);
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.surface,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: AppColors.textHint),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(12),
+                                        topRight: Radius.circular(12),
+                                      ),
+                                      child: AspectRatio(
+                                        aspectRatio: 1.09,
+                                        child: Image.network(
+                                          "${URLs.storageUrl}${state.data[index].thumbnail}",
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
                                         ),
-                                        const SizedBox(height: 6),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                      ),
+                                    ),
+
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              indonesiaCurrency(
-                                                value: state.data[index].price
-                                                    .toString(),
-                                              ),
+                                              state.data[index].name,
+                                              overflow: TextOverflow.ellipsis,
                                               style: GoogleFonts.inter(
-                                                color: AppColors.primary,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.textPrimary,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
                                               ),
                                             ),
+                                            const SizedBox(height: 6),
                                             Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Icon(
-                                                  Icons.inventory_rounded,
-                                                  size: 16,
-                                                  color: stockColor(
-                                                    stock: int.parse(
-                                                      state.data[index].stock
-                                                          .toString(),
-                                                    ),
+                                                Text(
+                                                  indonesiaCurrency(
+                                                    value: state
+                                                        .data[index]
+                                                        .price
+                                                        .toString(),
+                                                  ),
+                                                  style: GoogleFonts.inter(
+                                                    color: AppColors.primary,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
                                                   ),
                                                 ),
-                                                const SizedBox(width: 4),
-                                                Text(
-                                                  state.data[index].stock
-                                                      .toString(),
-                                                  style: GoogleFonts.inter(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                  textAlign: TextAlign.end,
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.inventory_rounded,
+                                                      size: 16,
+                                                      color: stockColor(
+                                                        stock: int.parse(
+                                                          state
+                                                              .data[index]
+                                                              .stock
+                                                              .toString(),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      state.data[index].stock
+                                                          .toString(),
+                                                      style: GoogleFonts.inter(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                      textAlign: TextAlign.end,
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
                                           ],
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
+                              ),
+                            );
+                          }),
                         );
-                      }),
-                    );
-                  } else if (state is GetProductByCategoryFailed) {
-                    return Center(child: Text(state.message));
-                  } else if (state is GetProductByCategoryLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else {
-                    return const Center(
-                      child: Text("Silahkan pilih kategori produk"),
-                    );
-                  }
-                },
-              ),
+                      } else if (state is GetProductByCategoryFailed) {
+                        return Center(child: Text(state.message));
+                      } else if (state is GetProductByCategoryLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        return const Center(
+                          child: Text("Silahkan pilih kategori produk"),
+                        );
+                      }
+                    },
+                  ),
             ),
           ],
         ),

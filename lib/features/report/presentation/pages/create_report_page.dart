@@ -23,6 +23,8 @@ class _CreateReportPageState extends State<CreateReportPage> {
   final formKey = GlobalKey<FormState>();
   TextEditingController quantityController = TextEditingController();
   TextEditingController noteController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+  String selectedDateApi = DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now());
 
   bool productSelected = false;
   int productId = 0;
@@ -36,10 +38,12 @@ class _CreateReportPageState extends State<CreateReportPage> {
   @override
   Widget build(BuildContext context) {
     final accountState = context.read<GetCurrentUserCubit>().state;
-    final bool isEmployee=
+    final bool isEmployee =
         accountState is GetCurrentUserSuccess &&
         accountState.data.role == 'employee';
-    final int currentUserId = accountState is GetCurrentUserSuccess ? accountState.data.id : 0;
+    final int currentUserId = accountState is GetCurrentUserSuccess
+        ? accountState.data.id
+        : 0;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -89,7 +93,9 @@ class _CreateReportPageState extends State<CreateReportPage> {
                         productId: productId,
                         quantity: int.parse(quantityController.text),
                         note: noteController.text,
-                        date: DateFormat(
+                        date: !isEmployee
+                        ? selectedDateApi
+                        : DateFormat(
                           'yyyy-MM-dd HH:mm:ss',
                         ).format(DateTime.now()),
                       ),
@@ -170,7 +176,7 @@ class _CreateReportPageState extends State<CreateReportPage> {
                               employeeIdOptions.clear();
                               employeeNameOptions = data;
                               employeeIdOptions = dataIds;
-          
+
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -208,10 +214,11 @@ class _CreateReportPageState extends State<CreateReportPage> {
                                       ),
                                       filled: true,
                                       fillColor: Colors.white,
-                                      contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 12,
-                                        horizontal: 16,
-                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                            horizontal: 16,
+                                          ),
                                     ),
                                     items: employeeNameOptions.map((
                                       String value,
@@ -249,6 +256,44 @@ class _CreateReportPageState extends State<CreateReportPage> {
                             }
                           },
                         ),
+                  ),
+
+                  Visibility(
+                    visible: !isEmployee,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 24),
+                        Text("Tanggal"),
+                        const SizedBox(height: 8),
+                        InkWell(
+                          onTap: () {
+                            _selectDate(
+                              context,
+                              selectedDate,
+                              onSelectionStartDatePicker,
+                              false,
+                            );
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.textOnPrimary,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: AppColors.border),
+                            ),
+                            child: Text(
+                              DateFormat("dd MMMM yyyy").format(selectedDate),
+                              style: TextStyle(color: AppColors.textPrimary),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 24),
                   Text("Jumlah Hasil Produksi (Pcs)"),
@@ -322,5 +367,44 @@ class _CreateReportPageState extends State<CreateReportPage> {
       // context.read<GetListEmployeeCubit>().getData();
       Navigator.pop(context);
     });
+  }
+
+  Future<void> _selectDate(
+    BuildContext context,
+    DateTime selectedDay,
+    void Function(DateTime args) onSelectionDatePicker,
+    bool isEndDate,
+  ) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDay,
+      initialDatePickerMode: DatePickerMode.day,
+      initialEntryMode: DatePickerEntryMode.calendar,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppColors.primary, // warna header & tanggal terpilih
+              onPrimary: Colors.white, // warna teks pada header
+              onSurface: Colors.black, // warna teks tanggal
+            ),
+            dialogBackgroundColor: Colors.white, // warna background dialog
+          ),
+          child: child!,
+        );
+      },
+      firstDate: DateTime(2015),
+      lastDate: DateTime(2040),
+    );
+
+    onSelectionDatePicker(pickedDate ?? selectedDay);
+  }
+
+  void onSelectionStartDatePicker(DateTime args) {
+    setState(() {
+      selectedDate = args;
+      selectedDateApi = DateFormat("yyyy-MM-dd HH:mm:ss").format(args);
+    });
+
   }
 }

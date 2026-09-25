@@ -1,11 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 <uses-permission android:name="android.permission.INTERNET"/>
-<uses-permission android:name="android.permission.CAMERA"/>
-<!-- Jika target Android 13+ (API 33) dan hanya butuh galeri foto: -->
-<uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-<!-- Untuk kompatibilitas Android 12 ke bawah: -->
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-    android:maxSdkVersion="32"/>
     <application
         android:label="Mega Batako"
         android:name="${applicationName}"

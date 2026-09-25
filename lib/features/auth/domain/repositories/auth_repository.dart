@@ -6,5 +6,6 @@ abstract class AuthRepository {
     required String email, 
     required String password, 
   });
-
+    Future<bool> getIsLoggedIn();
+    Future<bool> signOut();
 }

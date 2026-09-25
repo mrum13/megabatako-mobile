@@ -12,7 +12,7 @@ final class GetReportDateByIdInitial extends GetReportDateByIdState {}
 final class GetReportDateByIdLoading extends GetReportDateByIdState {}
 
 final class GetReportDateByIdSuccess extends GetReportDateByIdState {
-  final List<DateTime> data;
+  final List<MarkDateEntity> data;
 
   const GetReportDateByIdSuccess(this.data);
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:megabatako/features/auth/presentation/pages/login_page.dart';
+import 'package:megabatako/features/auth/presentation/pages/splash_page.dart';
 import 'package:megabatako/features/category/presentation/pages/category_page.dart';
 import 'package:megabatako/features/employee/presentation/pages/form_employee_page.dart';
 import 'package:megabatako/features/employee/presentation/pages/manage_employee_page.dart';
@@ -7,6 +8,9 @@ import 'package:megabatako/features/information/presentation/pages/information_p
 import 'package:megabatako/features/main_frame/presentation/pages/main_frame.dart';
 import 'package:megabatako/features/order/presentation/pages/choose_product_order_page.dart';
 import 'package:megabatako/features/order/presentation/pages/create_order_page.dart';
+import 'package:megabatako/features/panjar/presentation/pages/create_panjar_page.dart';
+import 'package:megabatako/features/panjar/presentation/pages/detail_panjar_page.dart';
+import 'package:megabatako/features/panjar/presentation/pages/panjar_page.dart';
 import 'package:megabatako/features/products/presentation/pages/create_product_page.dart';
 import 'package:megabatako/features/products/presentation/pages/detail_product_page.dart';
 import 'package:megabatako/features/products/presentation/pages/update_product_page.dart';
@@ -14,9 +18,12 @@ import 'package:megabatako/features/report/presentation/pages/choose_product_pag
 import 'package:megabatako/features/report/presentation/pages/create_report_page.dart';
 import 'package:megabatako/features/report/presentation/pages/detail_report_page.dart';
 import 'package:megabatako/features/report/presentation/pages/report_page.dart';
+import 'package:megabatako/features/report/presentation/pages/summary_withdraw_page.dart';
+import 'package:megabatako/features/withdraw/presentation/pages/detail_withdraw_page.dart';
+import 'package:megabatako/features/withdraw/presentation/pages/withdraw_page.dart';
 
 class AppRoutes {
-  // static const String splashPage = "/";
+  static const String splashPage= "/splash";
   static const String loginPage = "/login-page";
   static const String mainPage = "/main-frame";
   static const String createProductPage = "/create-product";
@@ -32,6 +39,12 @@ class AppRoutes {
   static const String createOrderPage = "/create-order";
   static const String chooseProductOrderPage = "/choose-product-order";
   static const String informationPage = "/information";
+  static const String summaryWithdrawPage= "/summary-withdraw";
+  static const String createPanjar= "/create-panjar";
+  static const String panjar= "/panjar";
+  static const String detailPanjar= "/detail-panjar";
+  static const String withdraw= "/withdraw";
+  static const String detailWithdraw= "/detail-withdraw";
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     // Normalisasi URL
@@ -39,6 +52,8 @@ class AppRoutes {
     final path = uri?.path ?? settings.name;
 
     switch (path) {
+      case splashPage:
+        return MaterialPageRoute(builder: (context) => const SplashPage());
       case loginPage:
         return MaterialPageRoute(builder: (context) => const LoginPage());
       case mainPage:
@@ -108,6 +123,36 @@ class AppRoutes {
       case informationPage:
         return MaterialPageRoute(
           builder: (context) => const InformationPage(),
+          settings: settings,
+        );
+      case summaryWithdrawPage:
+        return MaterialPageRoute(
+          builder: (context) => const SummaryWithdrawPage(),
+          settings: settings,
+        );
+      case createPanjar:
+        return MaterialPageRoute(
+          builder: (context) => const CreatePanjarPage(),
+          settings: settings,
+        );
+      case panjar:
+        return MaterialPageRoute(
+          builder: (context) => const PanjarPage(),
+          settings: settings,
+        );
+      case detailPanjar:
+        return MaterialPageRoute(
+          builder: (context) => const DetailPanjarPage(),
+          settings: settings,
+        );
+      case withdraw:
+        return MaterialPageRoute(
+          builder: (context) => const WithdrawPage(),
+          settings: settings,
+        );
+      case detailWithdraw:
+        return MaterialPageRoute(
+          builder: (context) => const DetailWithdrawPage(),
           settings: settings,
         );
       default:

@@ -21,12 +21,11 @@ class UpdateProductPage extends StatefulWidget {
 class _UpdateProductPageState extends State<UpdateProductPage> {
   final formKey = GlobalKey<FormState>();
   TextEditingController productNameController = TextEditingController();
+  TextEditingController employeeRateController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController stockController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  String? _selectedCategory;
-  int? _selectedCategoryId;
   List<String> _categoryOptions = [];
   List<int> _categoryIds = [];
 
@@ -121,6 +120,7 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
 
             productNameController.text = product.name;
             priceController.text = product.price.toString();
+            employeeRateController.text = product.employeeRate.toString();
             stockController.text = product.stock.toString();
             descriptionController.text = product.description;
 
@@ -165,7 +165,9 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                               onTap: () => showModalPhoto(context),
                               child: ClipRRect(
                                 borderRadius: BorderRadiusGeometry.circular(8),
-                                child: Image.network("${URLs.storageUrl}${product.thumbnail}"),
+                                child: Image.network(
+                                  "${URLs.storageUrl}${product.thumbnail}",
+                                ),
                               ),
                             );
                           }
@@ -240,9 +242,6 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                                   );
                                   _selectedCategoryId = _categoryIds[index];
                                 });
-                                DMethod.log(
-                                  "$_selectedCategory | $_selectedCategoryId",
-                                );
                               },
                               isExpanded: true,
                               icon: const Icon(
@@ -284,6 +283,20 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                         validator: (value) {
                           if (value == "" || value.toString().isEmpty) {
                             return "Isi harga terlebih dahulu !";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Text("Tarif Pekerja"),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        decoration: InputDecoration(hint: Text("Contoh 5000")),
+                        controller: employeeRateController,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == "" || value.toString().isEmpty) {
+                            return "Isi tarif terlebih dahulu !";
                           }
                           return null;
                         },
@@ -372,12 +385,12 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                                   ),
                                 );
                               },
-                            ).then(
-                              (value) {
-                                context.read<GetProductByCategoryCubit>().getData(productCategoryId: product.productCategoryId);
-                                Navigator.pop(context);
-                              },
-                            );
+                            ).then((value) {
+                              context.read<GetProductByCategoryCubit>().getData(
+                                productCategoryId: product.productCategoryId,
+                              );
+                              Navigator.pop(context);
+                            });
                           } else if (state is UpdateProductFailed) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -401,12 +414,13 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                                   data: StoreProductEntity(
                                     productCategoryId: _selectedCategoryId!,
                                     name: productNameController.text,
+                                    employeeRate: employeeRateController.text,
                                     price: priceController.text,
                                     thumbnail: imageFile!,
                                     stock: stockController.text,
                                     desc: descriptionController.text,
                                   ),
-                                  idProduct: id
+                                  idProduct: id,
                                 );
                               }
                             },

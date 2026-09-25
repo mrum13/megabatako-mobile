@@ -6,18 +6,17 @@ import 'package:megabatako/core/api/api_helper.dart';
 import 'package:megabatako/core/api/list_api.dart';
 import 'package:megabatako/core/api/urls.dart';
 import 'package:megabatako/core/errors/expentions.dart';
-import 'package:megabatako/features/category/data/models/category_model.dart';
 import 'package:megabatako/features/products/data/models/product_model.dart';
 import 'package:megabatako/features/products/data/models/store_product_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:megabatako/features/secure_storage_service/data/datasources/secure_storage_service.dart';
 
 abstract class ProductRemoteDataSource {
-  Future<bool> storeProductCategory({required StoreProductModel data});
+  Future<bool> storeProduct({required StoreProductModel data});
   Future<List<ProductModel>> getProductByCategory({
     required int productCategoryId,
   });
   Future<bool> deleteProduct({required int id});
-  Future<bool> updateProductCategory({
+  Future<bool> updateProduct({
     required StoreProductModel data,
     required int idProduct,
   });
@@ -25,23 +24,25 @@ abstract class ProductRemoteDataSource {
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   final http.Client client;
-  final SharedPreferences pref;
+  final SecureStorageService pref;
 
   ProductRemoteDataSourceImpl({required this.client, required this.pref});
 
   @override
-  Future<bool> storeProductCategory({required StoreProductModel data}) async {
+  Future<bool> storeProduct({required StoreProductModel data}) async {
+    final token = await pref.getToken();
     Uri url = Uri.parse('${URLs.url}${ListAPI.storeProduct}');
 
     try {
       var request = http.MultipartRequest('POST', url);
       request.headers.addAll({
         'Accept': 'application/json',
-        'Authorization': 'Bearer ${pref.getString('token')}',
+        'Authorization': 'Bearer $token',
       });
 
       request.fields['product_category_id'] = data.productCategoryId.toString();
       request.fields['name'] = data.name;
+      request.fields['employee_rate'] = data.employeeRate.toString();
       request.fields['price'] = data.price.toString();
       request.fields['stock'] = data.stock.toString();
       request.fields['description'] = data.desc;
@@ -74,7 +75,8 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
             throw ServerException();
         }
       }
-    } catch (e) {
+    } catch (e, s) {
+      DMethod.log("${URLs.url} | $e | $s");
       throw http.ClientException(e.toString());
     }
   }
@@ -83,6 +85,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   Future<List<ProductModel>> getProductByCategory({
     required int productCategoryId,
   }) async {
+    final token = await pref.getToken();
     Uri url = Uri.parse(
       '${URLs.url}${ListAPI.getProductByCategory(productCategoryId)}',
     );
@@ -94,7 +97,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
             url,
             headers: {
               'Accept': 'application/json',
-              'Authorization': 'Bearer ${pref.getString('token')}',
+              'Authorization': 'Bearer $token',
             },
           )
           .timeout(const Duration(seconds: 10));
@@ -120,6 +123,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
 
   @override
   Future<bool> deleteProduct({required int id}) async {
+    final token = await pref.getToken();
     Uri url = Uri.parse('${URLs.url}${ListAPI.deleteProduct(id)}');
     late final http.Response response;
 
@@ -129,7 +133,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
             url,
             headers: {
               'Accept': 'application/json',
-              'Authorization': 'Bearer ${pref.getString('token')}',
+              'Authorization': 'Bearer $token',
             },
           )
           .timeout(const Duration(seconds: 10));
@@ -156,21 +160,23 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   }
 
   @override
-  Future<bool> updateProductCategory({
+  Future<bool> updateProduct({
     required StoreProductModel data,
     required int idProduct,
   }) async {
+    final token = await pref.getToken();
     Uri url = Uri.parse('${URLs.url}${ListAPI.updateProduct(idProduct)}');
 
     try {
       var request = http.MultipartRequest('PUT', url);
       request.headers.addAll({
         'Accept': 'application/json',
-        'Authorization': 'Bearer ${pref.getString('token')}',
+        'Authorization': 'Bearer $token',
       });
 
       request.fields['product_category_id'] = data.productCategoryId.toString();
       request.fields['name'] = data.name;
+      request.fields['employee_rate'] = data.employeeRate.toString();
       request.fields['price'] = data.price.toString();
       request.fields['stock'] = data.stock.toString();
       request.fields['description'] = data.desc;

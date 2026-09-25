@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:megabatako/core/api/urls.dart';
 import 'package:megabatako/core/theme/app_theme.dart';
 import 'package:megabatako/di/injection.dart';
 import 'package:megabatako/features/account/presentation/blocs/cubit/get_current_user_cubit.dart';
@@ -15,19 +14,23 @@ import 'package:megabatako/features/home/presentation/blocs/cubit/get_stock_summ
 import 'package:megabatako/features/image_picker/presentation/bloc/cubit/image_picker_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/blocs/cubit/navbar_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/pages/main_frame.dart';
+import 'package:megabatako/features/panjar/presentation/bloc/cubit/get_panjar_by_id_cubit.dart';
+import 'package:megabatako/features/panjar/presentation/bloc/cubit/store_panjar_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/delete_product_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/get_product_by_category_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/store_product_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/update_product_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_by_id_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_date_by_id_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/get_summary_withdraw_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/store_report_cubit.dart';
+import 'package:megabatako/features/withdraw/presentation/bloc/cubit/get_withdraw_cubit.dart';
+import 'package:megabatako/features/withdraw/presentation/bloc/cubit/store_withdraw_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initLocator();
-  await URLs.init(); 
   runApp(const MyApp());
 }
 
@@ -56,11 +59,16 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => locator<GetReportByIdCubit>()),
         BlocProvider(create: (context) => locator<GetStockSummaryCubit>()),
         BlocProvider(create: (context) => locator<GetReportDateByIdCubit>()),
+        BlocProvider(create: (context) => locator<GetSummaryWithdrawCubit>()),
+        BlocProvider(create: (context) => locator<StorePanjarCubit>()),
+        BlocProvider(create: (context) => locator<GetPanjarByIdCubit>()),
+        BlocProvider(create: (context) => locator<StoreWithdrawCubit>()),
+        BlocProvider(create: (context) => locator<GetWithdrawCubit>()),
       ],
       child: MaterialApp(
         theme: AppTheme.lightTheme,
         home: MainFrame(),
-        initialRoute: AppRoutes.loginPage,
+        initialRoute: AppRoutes.splashPage,
         onGenerateRoute: AppRoutes.onGenerateRoute,
       ),
     );

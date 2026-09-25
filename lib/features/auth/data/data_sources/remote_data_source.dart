@@ -6,7 +6,7 @@ import 'package:megabatako/core/api/api_helper.dart';
 import 'package:megabatako/core/api/list_api.dart';
 import 'package:megabatako/core/api/urls.dart';
 import 'package:megabatako/core/errors/expentions.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:megabatako/features/secure_storage_service/data/datasources/secure_storage_service.dart';
 
 abstract class AuthRemoteDataSource {
   Future<bool> signin({required String email, required String password});
@@ -14,7 +14,7 @@ abstract class AuthRemoteDataSource {
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final http.Client client;
-  final SharedPreferences pref;
+  final SecureStorageService pref;
 
   AuthRemoteDataSourceImpl({required this.client, required this.pref});
 
@@ -38,8 +38,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
     if (response.statusCode == 200) {
       Map body = jsonDecode(response.body);
-      pref.setString("token", body['data']['token']);
-      pref.setString("current_pass", password);
+      await pref.saveToken(body['data']['token']);
+      await pref.savePassword(password);
       return true;
     } else {
       final body = decodeResponseBody(response);
@@ -51,10 +51,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         case 422:
           throw RequestValidationException(body['message']);
         default:
-          DMethod.log(
-            response.statusCode.toString(),
-            prefix: 'Server Exception Login',
-          );
+
           throw ServerException();
       }
     }

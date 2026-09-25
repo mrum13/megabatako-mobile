@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:megabatako/core/theme/app_colors.dart';
 import 'package:megabatako/features/account/presentation/blocs/cubit/get_current_user_cubit.dart';
+import 'package:megabatako/features/auth/presentation/blocs/cubit/sign_in_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
 class AccountPage extends StatelessWidget {
@@ -130,11 +131,55 @@ class AccountPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.informationPage);
+              },
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline),
+                  const SizedBox(width: 16),
+                  Text("Informasi Tambahan"),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.loginPage,
-                  (Route<dynamic> route) => false,
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Tidak",
+                            style: TextStyle(color: AppColors.error),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            context.read<SignInCubit>().signOut();
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              AppRoutes.loginPage,
+                              (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: Text("Ya"),
+                        ),
+                      ],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      title: Text("Yakin mau logout ?"),
+                    );
+                  },
                 );
               },
               style: ElevatedButton.styleFrom(

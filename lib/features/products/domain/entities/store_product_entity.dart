@@ -6,6 +6,7 @@ class StoreProductEntity extends Equatable {
   const StoreProductEntity({
     required this.productCategoryId, 
     required this.name,
+    required this.employeeRate,
     required this.price,
     required this.thumbnail,
     required this.stock,
@@ -14,6 +15,7 @@ class StoreProductEntity extends Equatable {
 
   final int productCategoryId;
   final String name;
+  final String employeeRate;
   final String price;
   final String? thumbnail;
   final String stock;
@@ -24,6 +26,7 @@ class StoreProductEntity extends Equatable {
   List<Object> get props => [
     productCategoryId,
     name,
+    employeeRate,
     price,
     thumbnail!,
     stock,

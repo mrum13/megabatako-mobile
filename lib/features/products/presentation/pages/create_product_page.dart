@@ -19,6 +19,7 @@ class CreateProductPage extends StatefulWidget {
 class _CreateProductPageState extends State<CreateProductPage> {
   final formKey = GlobalKey<FormState>();
   TextEditingController productNameController = TextEditingController();
+  TextEditingController employeeRateController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController stockController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -231,9 +232,6 @@ class _CreateProductPageState extends State<CreateProductPage> {
                               );
                               _selectedCategoryId = _categoryIds[index];
                             });
-                            DMethod.log(
-                              "$_selectedCategory | $_selectedCategoryId",
-                            );
                           },
                           isExpanded: true,
                           icon: const Icon(
@@ -273,6 +271,20 @@ class _CreateProductPageState extends State<CreateProductPage> {
                     validator: (value) {
                       if (value == "" || value.toString().isEmpty) {
                         return "Isi harga terlebih dahulu !";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Text("Tarif Pekerja"),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    decoration: InputDecoration(hint: Text("Contoh 5000")),
+                    controller: employeeRateController,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == "" || value.toString().isEmpty) {
+                        return "Isi tarif terlebih dahulu !";
                       }
                       return null;
                     },
@@ -385,6 +397,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                               data: StoreProductEntity(
                                 productCategoryId: _selectedCategoryId!,
                                 name: productNameController.text,
+                                employeeRate: employeeRateController.text,
                                 price: priceController.text,
                                 thumbnail: imageFile!,
                                 stock: stockController.text,

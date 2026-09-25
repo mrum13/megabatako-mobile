@@ -9,7 +9,9 @@ class ReportByIdModel extends ReportByIdEntity {
     required super.note,
     required super.date,
     required super.productName,
-    required super.productThumbnail
+    required super.productThumbnail,
+    required super.totalEmployeeRateItem,
+    required super.isPaid
   });
   
   factory ReportByIdModel.fromJson(Map<String, dynamic> json) =>
@@ -21,6 +23,8 @@ class ReportByIdModel extends ReportByIdEntity {
         note : json["description"],
         date : json["date_time"],
         productName : json["product_name"],
-        productThumbnail: json["product_thumbnail"]
+        productThumbnail: json["product_thumbnail"],
+        totalEmployeeRateItem: json["total_employee_rate"],
+        isPaid: json["is_paid"]
       );
 }

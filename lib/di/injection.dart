@@ -11,7 +11,9 @@ import 'package:megabatako/features/account/presentation/blocs/cubit/get_current
 import 'package:megabatako/features/auth/data/data_sources/remote_data_source.dart';
 import 'package:megabatako/features/auth/data/repositories_impl/auth_repository_impl.dart';
 import 'package:megabatako/features/auth/domain/repositories/auth_repository.dart';
+import 'package:megabatako/features/auth/domain/use_cases/auth_check_use_case.dart';
 import 'package:megabatako/features/auth/domain/use_cases/sign_in_use_case.dart';
+import 'package:megabatako/features/auth/domain/use_cases/sign_out_use_case.dart';
 import 'package:megabatako/features/auth/presentation/blocs/cubit/sign_in_cubit.dart';
 import 'package:megabatako/features/category/data/datasources/category_remote_data_source.dart';
 import 'package:megabatako/features/category/data/repositories/category_repository_impl.dart';
@@ -42,6 +44,13 @@ import 'package:megabatako/features/image_picker/domain/usecases/choose_picture_
 import 'package:megabatako/features/image_picker/domain/usecases/take_picture_use_case.dart';
 import 'package:megabatako/features/image_picker/presentation/bloc/cubit/image_picker_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/blocs/cubit/navbar_cubit.dart';
+import 'package:megabatako/features/panjar/data/datasources/panjar_remote_data_source.dart';
+import 'package:megabatako/features/panjar/data/repositories/panjar_repository_impl.dart';
+import 'package:megabatako/features/panjar/domain/repositories/panjar_repository.dart';
+import 'package:megabatako/features/panjar/domain/usecases/get_panjar_by_id_use_case.dart';
+import 'package:megabatako/features/panjar/domain/usecases/store_panjar_use_case.dart';
+import 'package:megabatako/features/panjar/presentation/bloc/cubit/get_panjar_by_id_cubit.dart';
+import 'package:megabatako/features/panjar/presentation/bloc/cubit/store_panjar_cubit.dart';
 import 'package:megabatako/features/products/data/data_sources/product_remote_data_source.dart';
 import 'package:megabatako/features/products/data/repositories_impl/product_repository_impl.dart';
 import 'package:megabatako/features/products/domain/repositories/product_repository.dart';
@@ -59,11 +68,20 @@ import 'package:megabatako/features/report/data/repositories/report_repository_i
 import 'package:megabatako/features/report/domain/repositories/report_repository.dart';
 import 'package:megabatako/features/report/domain/usecases/get_report_date_use_case.dart';
 import 'package:megabatako/features/report/domain/usecases/get_report_use_case.dart';
+import 'package:megabatako/features/report/domain/usecases/get_summary_use_case.dart';
 import 'package:megabatako/features/report/domain/usecases/store_report_use_case.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_by_id_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_date_by_id_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/get_summary_withdraw_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/store_report_cubit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:megabatako/features/secure_storage_service/data/datasources/secure_storage_service.dart';
+import 'package:megabatako/features/withdraw/data/datasources/withdraw_remote_data_source.dart';
+import 'package:megabatako/features/withdraw/data/repositories/withdraw_repository_impl.dart';
+import 'package:megabatako/features/withdraw/domain/repositories/withdraw_repository.dart';
+import 'package:megabatako/features/withdraw/domain/usecases/get_withdraw_use_case.dart';
+import 'package:megabatako/features/withdraw/domain/usecases/store_withdraw_use_case.dart';
+import 'package:megabatako/features/withdraw/presentation/bloc/cubit/get_withdraw_cubit.dart';
+import 'package:megabatako/features/withdraw/presentation/bloc/cubit/store_withdraw_cubit.dart';
 
 final locator = GetIt.instance;
 
@@ -71,10 +89,15 @@ Future<void> initLocator() async {
   /// state management
   /// untuk registrasi state management, gunakan registerFactory
   locator.registerFactory(() => NavbarCubit());
-  locator.registerFactory(() => SignInCubit(locator()));
+  locator.registerFactory(() => SignInCubit(locator(),locator(),locator()));
   locator.registerFactory(() => GetCurrentUserCubit(locator()));
   locator.registerFactory(() => GetProductCategoryCubit(locator()));
-  locator.registerFactory(() => ImagePickerCubit(choosePictureUseCase: locator(),takePictureUseCase: locator()));
+  locator.registerFactory(
+    () => ImagePickerCubit(
+      choosePictureUseCase: locator(),
+      takePictureUseCase: locator(),
+    ),
+  );
   locator.registerFactory(() => StoreProductCubit(locator()));
   locator.registerFactory(() => DeleteProductCubit(locator()));
   locator.registerFactory(() => UpdateProductCubit(locator()));
@@ -88,6 +111,11 @@ Future<void> initLocator() async {
   locator.registerFactory(() => GetReportByIdCubit(locator()));
   locator.registerFactory(() => GetStockSummaryCubit(locator()));
   locator.registerFactory(() => GetReportDateByIdCubit(locator()));
+  locator.registerFactory(() => GetSummaryWithdrawCubit(locator()));
+  locator.registerFactory(() => StorePanjarCubit(locator()));
+  locator.registerFactory(() => GetPanjarByIdCubit(locator()));
+  locator.registerFactory(() => StoreWithdrawCubit(locator()));
+  locator.registerFactory(() => GetWithdrawCubit(locator()));
 
   ///business logic state
 
@@ -111,46 +139,68 @@ Future<void> initLocator() async {
   locator.registerLazySingleton(() => GetReportUseCase(locator()));
   locator.registerLazySingleton(() => GetReportDateUseCase(locator()));
   locator.registerLazySingleton(() => GetStockSummaryUseCase(locator()));
+  locator.registerLazySingleton(() => GetSummaryUseCase(locator()));
+  locator.registerLazySingleton(() => StorePanjarUseCase(locator()));
+  locator.registerLazySingleton(() => GetPanjarUseCase(locator()));
+  locator.registerLazySingleton(() => AuthCheckUseCase(locator()));
+  locator.registerLazySingleton(() => SignOutUseCase(locator()));
+  locator.registerLazySingleton(() => StoreWithdrawUseCase(locator()));
+  locator.registerLazySingleton(() => GetWithdrawUseCase(locator()));
 
   /// repository
   /// untuk registrasi repository, gunakan registerLazySingleton
   locator.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(
-      networkInfo: locator(), 
-      remoteDataSource: locator()),
+    () =>
+        AuthRepositoryImpl(networkInfo: locator(), remoteDataSource: locator(), secureStorageService: locator()),
   );
   locator.registerLazySingleton<AccountRepository>(
     () => AccountRepositoryImpl(
-      networkInfo: locator(), 
-      remoteDataSource: locator()),
+      networkInfo: locator(),
+      remoteDataSource: locator(),
+    ),
   );
   locator.registerLazySingleton<ProductRepository>(
     () => ProductRepositoryImpl(
-      networkInfo: locator(), 
-      remoteDataSource: locator()),
+      networkInfo: locator(),
+      remoteDataSource: locator(),
+    ),
   );
   locator.registerLazySingleton<ImagePickerRepository>(
-    () => ImagePickerRepositoryImpl(locator())
+    () => ImagePickerRepositoryImpl(locator()),
   );
   locator.registerLazySingleton<CategoryRepository>(
     () => CategoryRepositoryImpl(
-      networkInfo: locator(), 
-      remoteDataSource: locator()),
+      networkInfo: locator(),
+      remoteDataSource: locator(),
+    ),
   );
   locator.registerLazySingleton<EmployeeRepository>(
     () => EmployeeRepositoryImpl(
-      networkInfo: locator(), 
-      remoteDataSource: locator()),
+      networkInfo: locator(),
+      remoteDataSource: locator(),
+    ),
   );
   locator.registerLazySingleton<ReportRepository>(
     () => ReportRepositoryImpl(
-      networkInfo: locator(), 
-      remoteDataSource: locator()),
+      networkInfo: locator(),
+      remoteDataSource: locator(),
+    ),
   );
   locator.registerLazySingleton<HomeRepository>(
-    () => HomeRepositoryImpl(
-      networkInfo: locator(), 
-      remoteDataSource: locator()),
+    () =>
+        HomeRepositoryImpl(networkInfo: locator(), remoteDataSource: locator()),
+  );
+  locator.registerLazySingleton<PanjarRepository>(
+    () => PanjarRepositoryImpl(
+      networkInfo: locator(),
+      remoteDataSource: locator(),
+    ),
+  );
+  locator.registerLazySingleton<WithdrawRepository>(
+    () => WithdrawRepositoryImpl(
+      networkInfo: locator(),
+      remoteDataSource: locator(),
+    ),
   );
 
   /// datasource
@@ -186,6 +236,12 @@ Future<void> initLocator() async {
   locator.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeRemoteDataSourceImpl(client: locator(), pref: locator()),
   );
+  locator.registerLazySingleton<PanjarRemoteDataSource>(
+    () => PanjarRemoteDataSourceImpl(client: locator(), pref: locator()),
+  );
+  locator.registerLazySingleton<WithdrawRemoteDataSource>(
+    () => WithdrawRemoteDataSourceImpl(client: locator(), pref: locator()),
+  );
 
   ///device data source
   // locator.registerLazySingleton<PermissionDeviceDataSource>(
@@ -200,13 +256,14 @@ Future<void> initLocator() async {
 
   /// external
   /// untuk registrasi hal lain, gunakan registerLazySingleton
-  final sp = await SharedPreferences.getInstance();
+  locator.registerLazySingleton<SecureStorageService>(
+    () => SecureStorageServiceImpl(),
+  );
   // LocalStorageSp.loginUser = await SharedPreferences.getInstance();
 
   locator.registerLazySingleton(() => http.Client());
   locator.registerLazySingleton(() => Connectivity());
   locator.registerLazySingleton(() => ImagePicker());
-  locator.registerLazySingleton(() => sp);
   // locator.registerLazySingleton(() => LocalStorageSp());
 
   // final NotificationHelper notificationHelper = NotificationHelper();

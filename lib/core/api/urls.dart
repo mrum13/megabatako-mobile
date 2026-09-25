@@ -3,14 +3,8 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 
 class URLs {
-  static String url =
-      "http://127.0.0.1:8000"; // default sementara sebelum init selesai
-  static String storageUrl = "-";
-
-  static Future<void> init() async {
-    url = await getBaseUrl();
-    storageUrl = "${await getBaseUrl()}/storage/";
-  }
+    static String url = getBaseUrl();
+    static String storageUrl = "${getBaseUrl()}/storage/";
 }
 
 Future<bool> isPhysicalDevice() async {
@@ -27,7 +21,7 @@ Future<bool> isPhysicalDevice() async {
   return true; // fallback untuk platform lain (web, desktop, dll)
 }
 
-Future<String> getBaseUrl() async {
+String getBaseUrl() {
   // final isReal = await isPhysicalDevice();
 
   // String wifiConnection = "http://192.168.100.91:8000";
