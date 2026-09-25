@@ -6,7 +6,7 @@ import 'package:megabatako/core/api/list_api.dart';
 import 'package:megabatako/core/api/urls.dart';
 import 'package:megabatako/core/errors/expentions.dart';
 import 'package:megabatako/features/account/data/models/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:megabatako/features/secure_storage_service/data/datasources/secure_storage_service.dart';
 
 abstract class AccountRemoteDataSource {
   Future<UserModel> getCurrentUser();
@@ -14,19 +14,20 @@ abstract class AccountRemoteDataSource {
 
 class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
   final http.Client client;
-  final SharedPreferences pref;
+  final SecureStorageService pref;
 
   AccountRemoteDataSourceImpl({required this.client, required this.pref});
 
   @override
   Future<UserModel> getCurrentUser() async {
+    final token = await pref.getToken();
     Uri url = Uri.parse('${URLs.url}${ListAPI.currentUser}');
     final response = await client
         .get(
           url,
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer ${pref.getString('token')}',
+            'Authorization': 'Bearer $token',
           },
         )
         .timeout(const Duration(seconds: 10));

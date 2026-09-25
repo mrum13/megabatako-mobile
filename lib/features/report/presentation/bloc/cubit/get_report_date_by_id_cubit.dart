@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:megabatako/features/report/domain/entities/mark_date_entity.dart';
 import 'package:megabatako/features/report/domain/usecases/get_report_date_use_case.dart';
 
 part 'get_report_date_by_id_state.dart';

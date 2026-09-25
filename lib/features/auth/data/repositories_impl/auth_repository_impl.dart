@@ -7,14 +7,17 @@ import 'package:megabatako/core/errors/expentions.dart';
 import 'package:megabatako/core/errors/failure.dart';
 import 'package:megabatako/features/auth/data/data_sources/remote_data_source.dart';
 import 'package:megabatako/features/auth/domain/repositories/auth_repository.dart';
+import 'package:megabatako/features/secure_storage_service/data/datasources/secure_storage_service.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final NetworkInfo networkInfo;
   final AuthRemoteDataSource remoteDataSource;
+  final SecureStorageService secureStorageService;
 
   AuthRepositoryImpl({
     required this.networkInfo,
     required this.remoteDataSource,
+    required this.secureStorageService
   });
 
   @override
@@ -47,5 +50,15 @@ class AuthRepositoryImpl implements AuthRepository {
     } else {
       return const Left(ConnectionFailure('Tidak ada koneksi internet'));
     }
+  }
+
+  @override
+  Future<bool> getIsLoggedIn() async {
+    return secureStorageService.isLoggedIn();
+  }
+
+  @override
+  Future<bool> signOut() async {
+    return secureStorageService.clearToken().then((value) => true,);
   }
 }

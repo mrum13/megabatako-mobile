@@ -24,13 +24,13 @@ class InformationPage extends StatelessWidget {
         'image': "assets/bri.png",
         'title': "Rekening BRI",
         'content':
-            "2143-0100-0347-569",
+            "2143-0100-0347-569 (Rahmat)",
       },
       {
         'image': "assets/whatsapp.png",
         'title': "Whatsapp",
         'content':
-            "085341004374",
+            "085341004374 (Rahmat)",
       },
     ];
     return Scaffold(

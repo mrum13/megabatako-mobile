@@ -6,7 +6,7 @@ import 'package:megabatako/core/api/list_api.dart';
 import 'package:megabatako/core/api/urls.dart';
 import 'package:megabatako/core/errors/expentions.dart';
 import 'package:megabatako/features/category/data/models/category_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:megabatako/features/secure_storage_service/data/datasources/secure_storage_service.dart';
 
 abstract class CategoryRemoteDataSource {
   Future<bool> storeProductCategory({required String name});
@@ -16,7 +16,7 @@ abstract class CategoryRemoteDataSource {
 
 class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   final http.Client client;
-  final SharedPreferences pref;
+  final SecureStorageService pref;
 
   CategoryRemoteDataSourceImpl({required this.client, required this.pref});
 
@@ -52,6 +52,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
 
   @override
   Future<bool> deleteProductCategory({required int idCategory}) async {
+    final token = await pref.getToken();
     Uri url = Uri.parse(
       '${URLs.url}${ListAPI.deleteProductCategory(idCategory)}',
     );
@@ -63,7 +64,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
             url,
             headers: {
               'Accept': 'application/json',
-              'Authorization': 'Bearer ${pref.getString('token')}',
+              'Authorization': 'Bearer $token',
             },
           )
           .timeout(const Duration(seconds: 10));
@@ -91,6 +92,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
 
   @override
   Future<bool> storeProductCategory({required String name}) async {
+    final token = await pref.getToken();
     Uri url = Uri.parse(
       '${URLs.url}${ListAPI.storeProductCategory}',
     );
@@ -102,7 +104,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
             url,
             headers: {
               'Accept': 'application/json',
-              'Authorization': 'Bearer ${pref.getString('token')}',
+              'Authorization': 'Bearer $token',
             },
             body: {
               "name": name

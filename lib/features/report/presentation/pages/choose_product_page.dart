@@ -123,11 +123,32 @@ class _ChooseProductPageState extends State<ChooseProductPage> {
                 builder: (context, state) {
                   if (state is GetProductByCategorySuccess) {
                     if (state.data.isEmpty) {
-                      return const Center(child: Text("Data Kosong"));
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              "assets/no_data.png",
+                              fit: BoxFit.contain,
+                              height: 150,
+                              width: 150,
+                            ),
+                            Text(
+                              "Data kosong",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     }
                     return GridView.count(
                       crossAxisCount: 2, // 2 kolom
-                      shrinkWrap: true, // supaya ikut tinggi konteniar nggak scroll sendiri
+                      shrinkWrap:
+                          true, // supaya ikut tinggi konteniar nggak scroll sendiri
                       mainAxisSpacing: 12,
                       crossAxisSpacing: 12,
                       childAspectRatio: 1, // atur proporsi card

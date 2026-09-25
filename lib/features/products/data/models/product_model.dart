@@ -7,6 +7,7 @@ class ProductModel extends ProductEntity {
     required super.name,
     required super.description,
     required super.price,
+    required super.employeeRate,
     required super.stock,
     required super.thumbnail,
     required super.categoryName
@@ -19,6 +20,7 @@ class ProductModel extends ProductEntity {
         name : json["name"],
         description : json["description"],
         price : json["price"],
+        employeeRate : json["employee_rate"],
         stock : json["stock"],
         thumbnail : json["thumbnail"],
         categoryName: json["category_name"]

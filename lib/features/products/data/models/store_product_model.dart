@@ -4,6 +4,7 @@ class StoreProductModel extends StoreProductEntity {
   const StoreProductModel({
     required super.productCategoryId,
     required super.name,
+    required super.employeeRate,
     required super.price,
     required super.desc,
     required super.thumbnail,
@@ -13,6 +14,7 @@ class StoreProductModel extends StoreProductEntity {
   Map<String, dynamic> toJson() => {
     "product_category_id": productCategoryId,
     "name": name,
+    "employee_rate": employeeRate,
     "price": price,
     "thumbnail": thumbnail,
     "stock": stock,

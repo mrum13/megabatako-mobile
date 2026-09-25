@@ -26,11 +26,20 @@ class ListAPI {
 
   ///report
   static String getReportByIdAndDate(int idEmployee, String date) => "/api/report/$idEmployee/$date";
-  static String getReportDateById(int idEmployee) => "/api/report/$idEmployee";
+  static String getReportDateById(int idEmployee) => "/api/report/mark-date/$idEmployee";
+  static String getSummary(int idEmployee) => "/api/report/list/$idEmployee";
   static const String storeReport = "/api/report/store";
   static String updateReport(int id) => "/api/report/update/$id";
   static String deleteReport(int id) => "/api/report/destroy/$id";
 
   ///home
   static const String stockSummary = "/api/home/stock-summary";
+
+  ///panjar
+  static const String storePanjar = "/api/panjar/store";
+  static String panjarById(int id) => "/api/panjar/$id";
+
+  ///withdraw
+  static const String storeWithdraw = "/api/withdraw/store";
+  static String withdrawById(int id) => "/api/withdraw/$id";
 }

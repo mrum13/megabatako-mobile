@@ -28,10 +28,11 @@ class ProductRepositoryImpl implements ProductRepository {
 
     if (online) {
       try {
-        final result = await remoteDataSource.storeProductCategory(
+        final result = await remoteDataSource.storeProduct(
           data: StoreProductModel(
             productCategoryId: data.productCategoryId,
             name: data.name,
+            employeeRate: data.employeeRate,
             price: data.price,
             desc: data.desc,
             thumbnail: data.thumbnail,
@@ -122,10 +123,11 @@ class ProductRepositoryImpl implements ProductRepository {
 
     if (online) {
       try {
-        final result = await remoteDataSource.updateProductCategory(
+        final result = await remoteDataSource.updateProduct(
           data: StoreProductModel(
             productCategoryId: data.productCategoryId,
             name: data.name,
+            employeeRate: data.employeeRate,
             price: data.price,
             desc: data.desc,
             thumbnail: data.thumbnail,

@@ -8,7 +8,7 @@ import 'package:megabatako/core/api/urls.dart';
 import 'package:megabatako/core/errors/expentions.dart';
 import 'package:megabatako/features/employee/data/models/employee_model.dart';
 import 'package:megabatako/features/employee/data/models/form_employee_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:megabatako/features/secure_storage_service/data/datasources/secure_storage_service.dart';
 
 abstract class EmployeeRemoteDataSource {
   Future<List<EmployeeModel>> getListEmployee();
@@ -18,12 +18,13 @@ abstract class EmployeeRemoteDataSource {
 
 class EmployeeRemoteDataSourceImpl implements EmployeeRemoteDataSource {
   final http.Client client;
-  final SharedPreferences pref;
+  final SecureStorageService pref;
 
   EmployeeRemoteDataSourceImpl({required this.client, required this.pref});
 
   @override
   Future<List<EmployeeModel>> getListEmployee() async {
+    final token = await pref.getToken();
     Uri url = Uri.parse('${URLs.url}${ListAPI.employee}');
     late final http.Response response;
 
@@ -33,15 +34,13 @@ class EmployeeRemoteDataSourceImpl implements EmployeeRemoteDataSource {
             url,
             headers: {
               'Accept': 'application/json',
-              'Authorization': 'Bearer ${pref.getString('token')}',
+              'Authorization': 'Bearer $token',
             },
           )
           .timeout(const Duration(seconds: 10));
     } catch (e) {
       throw http.ClientException(e.toString());
     }
-
-    DMethod.log("Employe Status Code = ${response.statusCode}");
 
     if (response.statusCode == 200) {
       List rawData = jsonDecode(response.body)['data'];
@@ -61,6 +60,7 @@ class EmployeeRemoteDataSourceImpl implements EmployeeRemoteDataSource {
 
   @override
   Future<bool> deleteEmployee({required int id}) async {
+    final token = await pref.getToken();
     Uri url = Uri.parse(
       '${URLs.url}${ListAPI.deleteEmployee(id)}',
     );
@@ -72,7 +72,7 @@ class EmployeeRemoteDataSourceImpl implements EmployeeRemoteDataSource {
             url,
             headers: {
               'Accept': 'application/json',
-              'Authorization': 'Bearer ${pref.getString('token')}',
+              'Authorization': 'Bearer $token',
             },
           )
           .timeout(const Duration(seconds: 10));
@@ -100,6 +100,7 @@ class EmployeeRemoteDataSourceImpl implements EmployeeRemoteDataSource {
 
   @override
   Future<bool> storeEmployee({required FormEmployeeModel data}) async {
+    final token = await pref.getToken();
     Uri url = Uri.parse(
       '${URLs.url}${ListAPI.storeEmployee}',
     );
@@ -111,7 +112,7 @@ class EmployeeRemoteDataSourceImpl implements EmployeeRemoteDataSource {
             url,
             headers: {
               'Accept': 'application/json',
-              'Authorization': 'Bearer ${pref.getString('token')}',
+              'Authorization': 'Bearer $token',
             },
             body: {
               'name': data.name,

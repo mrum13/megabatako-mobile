@@ -8,7 +8,10 @@ import 'package:megabatako/core/theme/app_colors.dart';
 import 'package:megabatako/features/account/presentation/blocs/cubit/get_current_user_cubit.dart';
 import 'package:megabatako/features/home/presentation/blocs/cubit/get_stock_summary_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/blocs/cubit/navbar_cubit.dart';
+import 'package:megabatako/features/panjar/presentation/bloc/cubit/get_panjar_by_id_cubit.dart';
 import 'package:megabatako/features/report/presentation/bloc/cubit/get_report_date_by_id_cubit.dart';
+import 'package:megabatako/features/report/presentation/bloc/cubit/get_summary_withdraw_cubit.dart';
+import 'package:megabatako/features/withdraw/presentation/bloc/cubit/get_withdraw_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
 class HomePage extends StatefulWidget {
@@ -93,10 +96,13 @@ class _HomePageState extends State<HomePage> {
     final bool isEmployee =
         accountState is GetCurrentUserSuccess &&
         accountState.data.role == 'employee';
-    final int currentUserId = accountState is GetCurrentUserSuccess ? accountState.data.id : 0;
-    final String currentUserName = accountState is GetCurrentUserSuccess ? accountState.data.name : "-";
+    final int currentUserId = accountState is GetCurrentUserSuccess
+        ? accountState.data.id
+        : 0;
+    final String currentUserName = accountState is GetCurrentUserSuccess
+        ? accountState.data.name
+        : "-";
 
-    DMethod.log(isSuperAdmin.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
@@ -137,16 +143,21 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: InkWell(
                       onTap: () {
-                        if (isEmployee && currentUserId!=0) {
-                          context.read<GetReportDateByIdCubit>().getData(idEmployee: currentUserId);
+                        if (isEmployee && currentUserId != 0) {
+                          context.read<GetReportDateByIdCubit>().getData(
+                            idEmployee: currentUserId,
+                          );
+                          context.read<GetSummaryWithdrawCubit>().getData(
+                            idEmployee: currentUserId,
+                          );
                           Navigator.pushNamed(
-                              context,
-                              AppRoutes.detailReportPage,
-                              arguments: {
-                                "id": currentUserId,
-                                "name": currentUserName,
-                              },
-                            );
+                            context,
+                            AppRoutes.detailReportPage,
+                            arguments: {
+                              "id": currentUserId,
+                              "name": currentUserName,
+                            },
+                          );
                         } else {
                           Navigator.pushNamed(context, AppRoutes.reportPage);
                         }
@@ -159,6 +170,7 @@ class _HomePageState extends State<HomePage> {
                           border: Border.all(color: AppColors.border),
                         ),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
                               "assets/report.png",
@@ -214,11 +226,32 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
                   Expanded(
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.informationPage);
+                        if (isEmployee && currentUserId != 0) {
+                          context.read<GetPanjarByIdCubit>().getData(
+                            userId: currentUserId,
+                          );
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.detailPanjar,
+                            arguments: {
+                              "name": currentUserName,
+                            },
+                          );
+                        } else {
+                          Navigator.pushNamed(context, AppRoutes.panjar);
+                        }
                       },
                       child: Container(
                         height: 112,
@@ -231,13 +264,61 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              "assets/information.png",
+                              "assets/panjar.png",
                               height: 36,
                               width: 36,
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              "Informasi",
+                              "Panjar",
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16,),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        if (isEmployee && currentUserId != 0) {
+                          context.read<GetWithdrawCubit>().getData(
+                            userId: currentUserId,
+                          );
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.detailWithdraw,
+                            arguments: {
+                              "name": currentUserName,
+                            },
+                          );
+                        } else {
+                          Navigator.pushNamed(context, AppRoutes.withdraw);
+                        }
+                      },
+                      child: Container(
+                        height: 112,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/withdraw.png",
+                              height: 36,
+                              width: 36,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Withdraw",
                               style: TextStyle(
                                 color: AppColors.textSecondary,
                                 fontWeight: FontWeight.w700,
@@ -434,41 +515,43 @@ class RingkasanStokWidget extends StatelessWidget {
                   ),
                 ),
           const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Wrap(
-                direction: Axis.horizontal,
-                children: [
-                  Text(
-                    value,
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Wrap(
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 2),
-                  Text(
-                    "pcs",
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.textPrimary,
-                    ).copyWith(overflow: TextOverflow.ellipsis),
-                  ),
-                ],
-              ),
-            ],
+                    const SizedBox(height: 4),
+                    Text(
+                      value,
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      "pcs",
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.textPrimary,
+                      ).copyWith(overflow: TextOverflow.ellipsis),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

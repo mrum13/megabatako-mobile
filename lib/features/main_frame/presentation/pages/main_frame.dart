@@ -33,6 +33,16 @@ class MainFrame extends StatelessWidget {
           switch (value) {
             case 'option1':
               {
+                Navigator.pushNamed(context, AppRoutes.createOrderPage);
+              }
+              break;
+            case 'option2':
+              {
+                Navigator.pushNamed(context, AppRoutes.createReportPage);
+              }
+              break;
+            case 'option3':
+              {
                 context.read<ImagePickerCubit>().reset();
                 final result = await Navigator.pushNamed(
                   context,
@@ -56,12 +66,9 @@ class MainFrame extends StatelessWidget {
                 }
               }
               break;
-            case 'option2':
-              Navigator.pushNamed(context, AppRoutes.createOrderPage);
-              break;
-            case 'option3':
+            case 'option4':
               {
-                Navigator.pushNamed(context, AppRoutes.createReportPage);
+                Navigator.pushNamed(context, AppRoutes.createPanjar);
               }
               break;
             default:
@@ -86,32 +93,40 @@ class MainFrame extends StatelessWidget {
         ),
         itemBuilder: (BuildContext context) {
           final accountState = context.read<GetCurrentUserCubit>().state;
-          final bool isSuperAdmin =
+          final bool isEmployee =
               accountState is GetCurrentUserSuccess &&
-              accountState.data.role == 'superadmin';
+              accountState.data.role == 'employee';
           return <PopupMenuEntry<String>>[
-            if (isSuperAdmin) 
-              const PopupMenuItem<String>(
-                value: 'option1',
-                child: ListTile(
-                  leading: Icon(Icons.add_circle_outline),
-                  title: Text('Tambah Produk'),
-                ),
-              ),
             const PopupMenuItem<String>(
-              value: 'option2',
+              value: 'option1',
               child: ListTile(
                 leading: Icon(Icons.add_shopping_cart_sharp),
                 title: Text('Buat Pesanan'),
               ),
             ),
             const PopupMenuItem<String>(
-              value: 'option3',
+              value: 'option2',
               child: ListTile(
                 leading: Icon(Icons.add_chart_rounded),
                 title: Text('Buat Laporan'),
               ),
             ),
+            if (!isEmployee)
+              const PopupMenuItem<String>(
+                value: 'option3',
+                child: ListTile(
+                  leading: Icon(Icons.add_circle_outline),
+                  title: Text('Tambah Produk'),
+                ),
+              ),
+            if (!isEmployee)
+              const PopupMenuItem<String>(
+                value: 'option4',
+                child: ListTile(
+                  leading: Icon(Icons.attach_money),
+                  title: Text('Tambah Panjar'),
+                ),
+              ),
           ];
         },
       ),

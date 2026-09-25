@@ -127,7 +127,7 @@ class LoginPage extends StatelessWidget {
                                 >(
                                   listener: (context, state) {
                                     if (state is GetCurrentUserSuccess) {
-                                      context.read<SignInCubit>().setInit();
+                                      // context.read<SignInCubit>().setInit();
                                       Navigator.of(
                                         context,
                                       ).pushNamedAndRemoveUntil(

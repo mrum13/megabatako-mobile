@@ -9,7 +9,9 @@ class ReportByIdEntity extends Equatable {
     required this.note,
     required this.date,
     required this.productName,
-    required this.productThumbnail
+    required this.productThumbnail,
+    required this.totalEmployeeRateItem,
+    required this.isPaid
   });
 
   final int id;
@@ -20,6 +22,8 @@ class ReportByIdEntity extends Equatable {
   final String date;
   final String productName;
   final String productThumbnail;
+  final num totalEmployeeRateItem;
+  final int isPaid;
 
   @override
   List<Object> get props => [
@@ -30,6 +34,8 @@ class ReportByIdEntity extends Equatable {
     note,
     date,
     productName,
-    productThumbnail
+    productThumbnail,
+    totalEmployeeRateItem,
+    isPaid
   ];
 }

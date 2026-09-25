@@ -6,6 +6,7 @@ class ProductEntity extends Equatable {
     required this.productCategoryId,
     required this.name,
     required this.price,
+    required this.employeeRate,
     required this.thumbnail,
     required this.stock,
     required this.description,
@@ -16,6 +17,7 @@ class ProductEntity extends Equatable {
   final int productCategoryId;
   final String name;
   final num price;
+  final num employeeRate;
   final String thumbnail;
   final int stock;
   final String description;
@@ -27,6 +29,7 @@ class ProductEntity extends Equatable {
     productCategoryId,
     name,
     price,
+    employeeRate,
     thumbnail,
     stock,
     description,

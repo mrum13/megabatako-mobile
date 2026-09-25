@@ -16,9 +16,9 @@ class DetailProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accountState = context.read<GetCurrentUserCubit>().state;
-    final bool isSuperAdmin =
+    final bool isEmployee =
         accountState is GetCurrentUserSuccess &&
-        accountState.data.role == 'superadmin';
+        accountState.data.role == 'employee';
     var id = ModalRoute.of(context)!.settings.arguments as int;
 
     Color stockColor({required int stock}) {
@@ -50,7 +50,7 @@ class DetailProductPage extends StatelessWidget {
         color: AppColors.background,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: isSuperAdmin 
+          child: !isEmployee 
           ? Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -314,6 +314,30 @@ class DetailProductPage extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 18,
                             color: AppColors.darkSurface,
+                          ),
+                        ),
+                        Visibility(
+                          visible: !isEmployee,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 24),
+                              Text(
+                                "Tarif Pekerja : ",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                indonesiaCurrency(value: product.employeeRate.toString()),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: AppColors.darkSurface,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

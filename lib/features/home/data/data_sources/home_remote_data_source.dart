@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:d_method/d_method.dart';
 import 'package:megabatako/core/api/api_helper.dart';
 import 'package:megabatako/core/api/list_api.dart';
 import 'package:megabatako/core/api/urls.dart';
 import 'package:megabatako/core/errors/expentions.dart';
 import 'package:megabatako/features/home/data/models/stock_summary_model.dart';
 import 'package:megabatako/features/home/domain/entities/stock_summary_entity.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:megabatako/features/secure_storage_service/data/datasources/secure_storage_service.dart';
+
 import 'package:http/http.dart' as http;
 
 abstract class HomeRemoteDataSource {
@@ -16,12 +16,13 @@ abstract class HomeRemoteDataSource {
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   final http.Client client;
-  final SharedPreferences pref;
+  final SecureStorageService pref;
 
   HomeRemoteDataSourceImpl({required this.client, required this.pref});
 
   @override
   Future<List<StockSummaryEntity>> getStockSummary() async {
+    final token = await pref.getToken();
     Uri url = Uri.parse('${URLs.url}${ListAPI.stockSummary}');
     late final http.Response response;
 
@@ -31,7 +32,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
             url,
             headers: {
               'Accept': 'application/json',
-              'Authorization': 'Bearer ${pref.getString('token')}',
+              'Authorization': 'Bearer $token',
             },
           )
           .timeout(const Duration(seconds: 10));
