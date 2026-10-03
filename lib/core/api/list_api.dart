@@ -42,4 +42,9 @@ class ListAPI {
   ///withdraw
   static const String storeWithdraw = "/api/withdraw/store";
   static String withdrawById(int id) => "/api/withdraw/$id";
+
+  ///order
+  static const String storeOrder = "/api/order/store";
+  static const String getOrder = "/api/order";
+  static String updateOrder(int id) => "/api/order/update/$id";
 }

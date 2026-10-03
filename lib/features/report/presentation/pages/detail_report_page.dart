@@ -253,10 +253,23 @@ class _DetailReportPageState extends State<DetailReportPage> {
                                     ClipRRect(
                                       borderRadius:
                                           BorderRadiusGeometry.circular(8),
-                                      child: Image.network(
-                                        "${URLs.storageUrl}${state.data[index].productThumbnail}",
-                                        width: 100,
-                                        height: 100,
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            AppRoutes.imagePreviewPage,
+                                            arguments: {
+                                              "source": "network",
+                                              "path":
+                                                  "${URLs.storageUrl}${state.data[index].productThumbnail}",
+                                            },
+                                          );
+                                        },
+                                        child: Image.network(
+                                          "${URLs.storageUrl}${state.data[index].productThumbnail}",
+                                          width: 100,
+                                          height: 100,
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(width: 8),
@@ -349,7 +362,10 @@ class _DetailReportPageState extends State<DetailReportPage> {
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
-                                                Image.asset("assets/lunas.png", height: 45)
+                                                Image.asset(
+                                                  "assets/lunas.png",
+                                                  height: 45,
+                                                ),
                                               ],
                                             ),
                                     ),

@@ -5,6 +5,7 @@ import 'package:megabatako/core/api/urls.dart';
 import 'package:megabatako/core/theme/app_colors.dart';
 import 'package:megabatako/core/utils/formatter.dart';
 import 'package:megabatako/features/category/presentation/bloc/cubit/get_product_category_cubit.dart';
+import 'package:megabatako/features/order/domain/entities/product_items_store_entity.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/get_product_by_category_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
@@ -171,14 +172,14 @@ class _ChooseProductOrderPageState extends State<ChooseProductOrderPage> {
                         return InkWell(
                           onTap: () async {
                             idSelected = state.data[index].id;
-                            Navigator.pop(context, {
-                              'product_id': state.data[index].id,
-                              'product_name': state.data[index].name,
-                              'category_name': state.data[index].categoryName,
-                              'product_price': state.data[index].price,
-                              'image':
-                                  "${URLs.storageUrl}${state.data[index].thumbnail}",
-                            });
+                            Navigator.pop(context, ProductItemsStoreEntity(
+                              idProduct: state.data[index].id, 
+                              productName: state.data[index].name, 
+                              productPrice: state.data[index].price.toString(), 
+                              productQuantity: 1,
+                              productImage: "${URLs.storageUrl}${state.data[index].thumbnail}"
+                            ));
+                            
                           },
                           child: Container(
                             decoration: BoxDecoration(
