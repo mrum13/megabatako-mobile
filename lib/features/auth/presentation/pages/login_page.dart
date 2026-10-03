@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:megabatako/core/theme/app_colors.dart';
 import 'package:megabatako/core/utils/screen_tap.dart';
 import 'package:megabatako/features/account/presentation/blocs/cubit/get_current_user_cubit.dart';
@@ -9,6 +10,7 @@ import 'package:megabatako/features/category/presentation/bloc/cubit/get_product
 import 'package:megabatako/features/employee/presentation/bloc/cubit/get_list_employee_cubit.dart';
 import 'package:megabatako/features/home/presentation/blocs/cubit/get_stock_summary_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/blocs/cubit/navbar_cubit.dart';
+import 'package:megabatako/features/order/presentation/blocs/cubit/get_order_cubit.dart';
 import 'package:megabatako/routes/app_routes.dart';
 
 class LoginPage extends StatelessWidget {
@@ -29,6 +31,7 @@ class LoginPage extends StatelessWidget {
       context.read<GetProductCategoryCubit>().getData();
       context.read<GetListEmployeeCubit>().getData();
       context.read<GetStockSummaryCubit>().getData();
+      context.read<GetOrderCubit>().getData(date: DateFormat("yyyy-MM-dd").format(DateTime.now()));
       context.read<NavbarCubit>().setPage(0);
     }
 

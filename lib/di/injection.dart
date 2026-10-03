@@ -44,6 +44,15 @@ import 'package:megabatako/features/image_picker/domain/usecases/choose_picture_
 import 'package:megabatako/features/image_picker/domain/usecases/take_picture_use_case.dart';
 import 'package:megabatako/features/image_picker/presentation/bloc/cubit/image_picker_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/blocs/cubit/navbar_cubit.dart';
+import 'package:megabatako/features/order/data/data_sources/order_remote_data_source.dart';
+import 'package:megabatako/features/order/data/repositories_impl/order_repository_impl.dart';
+import 'package:megabatako/features/order/domain/repositories/order_repository.dart';
+import 'package:megabatako/features/order/domain/use_cases/get_order_use_case.dart';
+import 'package:megabatako/features/order/domain/use_cases/store_order_use_case.dart';
+import 'package:megabatako/features/order/domain/use_cases/update_order_status_use_case.dart';
+import 'package:megabatako/features/order/presentation/blocs/cubit/get_order_cubit.dart';
+import 'package:megabatako/features/order/presentation/blocs/cubit/store_order_cubit.dart';
+import 'package:megabatako/features/order/presentation/blocs/cubit/update_order_status_cubit.dart';
 import 'package:megabatako/features/panjar/data/datasources/panjar_remote_data_source.dart';
 import 'package:megabatako/features/panjar/data/repositories/panjar_repository_impl.dart';
 import 'package:megabatako/features/panjar/domain/repositories/panjar_repository.dart';
@@ -89,7 +98,7 @@ Future<void> initLocator() async {
   /// state management
   /// untuk registrasi state management, gunakan registerFactory
   locator.registerFactory(() => NavbarCubit());
-  locator.registerFactory(() => SignInCubit(locator(),locator(),locator()));
+  locator.registerFactory(() => SignInCubit(locator(), locator(), locator()));
   locator.registerFactory(() => GetCurrentUserCubit(locator()));
   locator.registerFactory(() => GetProductCategoryCubit(locator()));
   locator.registerFactory(
@@ -116,6 +125,9 @@ Future<void> initLocator() async {
   locator.registerFactory(() => GetPanjarByIdCubit(locator()));
   locator.registerFactory(() => StoreWithdrawCubit(locator()));
   locator.registerFactory(() => GetWithdrawCubit(locator()));
+  locator.registerFactory(() => StoreOrderCubit(locator()));
+  locator.registerFactory(() => GetOrderCubit(locator()));
+  locator.registerFactory(() => UpdateOrderStatusCubit(locator()));
 
   ///business logic state
 
@@ -146,12 +158,18 @@ Future<void> initLocator() async {
   locator.registerLazySingleton(() => SignOutUseCase(locator()));
   locator.registerLazySingleton(() => StoreWithdrawUseCase(locator()));
   locator.registerLazySingleton(() => GetWithdrawUseCase(locator()));
+  locator.registerLazySingleton(() => StoreOrderUseCase(locator()));
+  locator.registerLazySingleton(() => GetOrderUseCase(locator()));
+  locator.registerLazySingleton(() => UpdateOrderStatusUseCase(locator()));
 
   /// repository
   /// untuk registrasi repository, gunakan registerLazySingleton
   locator.registerLazySingleton<AuthRepository>(
-    () =>
-        AuthRepositoryImpl(networkInfo: locator(), remoteDataSource: locator(), secureStorageService: locator()),
+    () => AuthRepositoryImpl(
+      networkInfo: locator(),
+      remoteDataSource: locator(),
+      secureStorageService: locator(),
+    ),
   );
   locator.registerLazySingleton<AccountRepository>(
     () => AccountRepositoryImpl(
@@ -202,6 +220,12 @@ Future<void> initLocator() async {
       remoteDataSource: locator(),
     ),
   );
+  locator.registerLazySingleton<OrderRepository>(
+    () => OrderRepositoryImpl(
+      networkInfo: locator(),
+      remoteDataSource: locator(),
+    ),
+  );
 
   /// datasource
   /// untuk registrasi data source, gunakan registerLazySingleton
@@ -241,6 +265,9 @@ Future<void> initLocator() async {
   );
   locator.registerLazySingleton<WithdrawRemoteDataSource>(
     () => WithdrawRemoteDataSourceImpl(client: locator(), pref: locator()),
+  );
+  locator.registerLazySingleton<OrderRemoteDataSource>(
+    () => OrderRemoteDataSourceImpl(client: locator(), pref: locator()),
   );
 
   ///device data source

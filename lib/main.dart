@@ -14,6 +14,9 @@ import 'package:megabatako/features/home/presentation/blocs/cubit/get_stock_summ
 import 'package:megabatako/features/image_picker/presentation/bloc/cubit/image_picker_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/blocs/cubit/navbar_cubit.dart';
 import 'package:megabatako/features/main_frame/presentation/pages/main_frame.dart';
+import 'package:megabatako/features/order/presentation/blocs/cubit/get_order_cubit.dart';
+import 'package:megabatako/features/order/presentation/blocs/cubit/store_order_cubit.dart';
+import 'package:megabatako/features/order/presentation/blocs/cubit/update_order_status_cubit.dart';
 import 'package:megabatako/features/panjar/presentation/bloc/cubit/get_panjar_by_id_cubit.dart';
 import 'package:megabatako/features/panjar/presentation/bloc/cubit/store_panjar_cubit.dart';
 import 'package:megabatako/features/products/presentation/blocs/cubit/delete_product_cubit.dart';
@@ -64,6 +67,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => locator<GetPanjarByIdCubit>()),
         BlocProvider(create: (context) => locator<StoreWithdrawCubit>()),
         BlocProvider(create: (context) => locator<GetWithdrawCubit>()),
+        BlocProvider(create: (context) => locator<StoreOrderCubit>()),
+        BlocProvider(create: (context) => locator<GetOrderCubit>()),
+        BlocProvider(create: (context) => locator<UpdateOrderStatusCubit>()),
       ],
       child: MaterialApp(
         theme: AppTheme.lightTheme,

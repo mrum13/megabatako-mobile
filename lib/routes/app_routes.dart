@@ -4,6 +4,7 @@ import 'package:megabatako/features/auth/presentation/pages/splash_page.dart';
 import 'package:megabatako/features/category/presentation/pages/category_page.dart';
 import 'package:megabatako/features/employee/presentation/pages/form_employee_page.dart';
 import 'package:megabatako/features/employee/presentation/pages/manage_employee_page.dart';
+import 'package:megabatako/features/image_preview/presentation/pages/image_preview_page.dart';
 import 'package:megabatako/features/information/presentation/pages/information_page.dart';
 import 'package:megabatako/features/main_frame/presentation/pages/main_frame.dart';
 import 'package:megabatako/features/order/presentation/pages/choose_product_order_page.dart';
@@ -45,6 +46,7 @@ class AppRoutes {
   static const String detailPanjar= "/detail-panjar";
   static const String withdraw= "/withdraw";
   static const String detailWithdraw= "/detail-withdraw";
+  static const String imagePreviewPage= "/image-prview";
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     // Normalisasi URL
@@ -153,6 +155,11 @@ class AppRoutes {
       case detailWithdraw:
         return MaterialPageRoute(
           builder: (context) => const DetailWithdrawPage(),
+          settings: settings,
+        );
+      case imagePreviewPage:
+        return MaterialPageRoute(
+          builder: (context) => const ImagePreview(),
           settings: settings,
         );
       default:
